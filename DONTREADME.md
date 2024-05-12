@@ -90,4 +90,4 @@ This means I take your word's probability and subtract it from 1, which is the p
 
 > Why not use a ratio of probabilities to calculate the pronunciation score?
 
-Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are zero. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
+Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
