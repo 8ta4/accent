@@ -114,6 +114,14 @@ Using a ratio of probabilities sounds neat until you hit a snag where both proba
 
 No, it doesn't. The built-in speech-to-text on macOS doesn't provide word-level probabilities.
 
+> Is the choice of speech-to-text API based on the lowest overall word error rate?
+
+Nope. Instead of focusing on that, the tool uses an API that has a low word error rate:
+
+- for high-frequency words since pronunciation practice is mainly about these and can steer clear of uncommon words that speech-to-text APIs often trip up on.
+
+- in low-noise settings because it's fair to tell users to practice somewhere quiet.
+
 > Does this tool use macOS's built-in text-to-speech?
 
 No, it doesn't. The built-in text-to-speech on macOS sounds low-quality.
