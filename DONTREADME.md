@@ -114,6 +114,10 @@ Using a ratio of probabilities sounds neat until you hit a snag where both proba
 
 No, it doesn't. The built-in speech-to-text on macOS doesn't provide word-level probabilities.
 
+> Does this tool use the Whisper API provided by OpenAI?
+
+No. The open-source version of Whisper might be able to give you word-level probabilities if you use a specific flag, but the API that OpenAI provides doesn't seem to have this feature.
+
 > Is the choice of speech-to-text API based on the lowest overall word error rate?
 
 Nope. Instead of focusing on that, the tool uses an API that has a low word error rate:
