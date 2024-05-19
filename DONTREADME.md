@@ -68,13 +68,21 @@ The score is calculated using probability that may include:
 
 But don't worry, you don't have to speak twice, as the saying goes, "measure twice, speak once."
 
-> Does this tool use macOS's built-in text-to-speech?
+> How many speech-to-text API calls are needed?
 
-No, it doesn't. The built-in text-to-speech on macOS sounds low-quality.
+2
 
-> Does this tool use macOS's built-in speech-to-text?
+Here's how it works:
 
-No, it doesn't. The built-in speech-to-text on macOS doesn't provide word-level probabilities.
+1. The system uses a speech-to-text API to transcribe your voice and get a transcript with probabilities for each word.
+
+1. The system uses a text-to-speech API to generate voice from that transcript.
+
+1. The system uses the same speech-to-text API to transcribe the generated voice and get another transcript with probabilities for each word.
+
+> How many text-to-speech API calls are needed?
+
+1
 
 > Does each word in the user's speech have a corresponding word in the reference speech?
 
@@ -101,3 +109,11 @@ This means I take your word's probability and subtract it from 1, which is the p
 > Why not use a ratio of probabilities to calculate the pronunciation score?
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
+
+> Does this tool use macOS's built-in speech-to-text?
+
+No, it doesn't. The built-in speech-to-text on macOS doesn't provide word-level probabilities.
+
+> Does this tool use macOS's built-in text-to-speech?
+
+No, it doesn't. The built-in text-to-speech on macOS sounds low-quality.
