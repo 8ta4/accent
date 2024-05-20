@@ -4,7 +4,7 @@
 
 > What is `accent`?
 
-`accent` is a tool designed to help you fine-tune your spoken language skills by focusing on pinpointing what needs improvement.
+`accent` is a tool to identify mispronunciations.
 
 ## Setup
 
