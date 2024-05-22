@@ -129,3 +129,7 @@ Nope. Instead of focusing on that, the tool uses an API that has a low word erro
 > Does this tool use macOS's built-in text to speech?
 
 No, it doesn't. The built-in text to speech on macOS sounds low-quality.
+
+> Does this tool use ElevenLabs' text to speech?
+
+Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $330](https://elevenlabs.io/pricing#:~:text=Scale-,%24330/mo,-For%20growing%20publishers), and that's over budget.
