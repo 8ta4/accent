@@ -126,6 +126,6 @@ Nope. Instead of focusing on that, the tool uses an API that has a low word erro
 
 - in low-noise settings because it's fair to tell users to practice somewhere quiet.
 
-> Does this tool use macOS's built-in text-to-speech?
+> Does this tool use macOS's built-in text to speech?
 
-No, it doesn't. The built-in text-to-speech on macOS sounds low-quality.
+No, it doesn't. The built-in text to speech on macOS sounds low-quality.
