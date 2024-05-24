@@ -160,6 +160,27 @@ Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $33
 
 `accent` uses OpenAI's text-to-speech API.
 
+### Storage
+
+> Where does this tool store the API keys?
+
+The API keys are stored in `~/.config/say/config.yaml`.
+
+> Why choose YAML over JSON for storing the API keys?
+
+YAML is better than JSON because it
+
+- allows you to add comments.
+- doesn't require extra commas.
+
+> Why the `.yaml` and not `.yml`?
+
+The YAML FAQ recommends "[using '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
+
+> Why not use the `Application Support` directory for the API keys?
+
+`~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
+
 ### Recording
 
 > Does this tool store any audio at all?
