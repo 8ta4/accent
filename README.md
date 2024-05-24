@@ -10,15 +10,19 @@
 
 > How do you set up `accent`?
 
-1. Install devenv.
+1. Install [devenv](https://github.com/cachix/devenv/blob/2837f4989338aaf03b5b4cf8bad91fe27150d984/docs/getting-started.md#installation).
 
-1. Install direnv.
+1. Install [direnv](https://github.com/cachix/devenv/blob/2837f4989338aaf03b5b4cf8bad91fe27150d984/docs/automatic-shell-activation.md#installing-direnv).
 
 1. Open a terminal window.
 
-1. Use the following command to run the installation script:
+1. Run the following commands:
 
-TODO: Insert the command for the script.
+   ```sh
+   git clone git@github.com:8ta4/accent.git
+   cd accent
+   direnv allow
+   ```
 
 1. TODO: Decide which API providers to use.
 
