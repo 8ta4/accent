@@ -96,7 +96,7 @@ This means I take your word's probability and subtract it from 1, which is the p
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
 
-### Speech-to-Text
+### Speech to Text
 
 > How many speech-to-text API calls are needed?
 
@@ -138,7 +138,7 @@ No, `accent` doesn't use a proxy. `accent` is an Electron app. That means `accen
 
 Nah, it isn't. Streaming APIs tend to trade off accuracy because they don't take into account the context that comes later.
 
-### Text-to-Speech
+### Text to Speech
 
 > How many text-to-speech API calls are needed?
 
