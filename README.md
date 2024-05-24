@@ -52,11 +52,11 @@
 
 1. Navigate to the directory where `accent` is installed.
 
-1. Run the command `accent` to start the application. This command will launch `accent` in your default web browser.
+1. Run the command `accent` to start the application.
 
 1. Start speaking.
 
-1. Press **Space** when you want to evaluate your pronunciation up to that moment. `accent` will analyze your speech and provide feedback.
+1. Press **Space** when you want to evaluate your pronunciation up to that moment.
 
 > How do I evaluate my pronunciation the second time?
 
