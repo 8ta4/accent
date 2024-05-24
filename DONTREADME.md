@@ -126,6 +126,18 @@ Nope. Instead of focusing on that, the tool uses an API that has a low word erro
 
 - in low-noise settings because it's fair to tell users to practice somewhere quiet.
 
+> What speech-to-text API does this tool use?
+
+`accent` uses Deepgram's speech-to-text API. But Deepgram doesn't support custom cross-origin resource sharing (CORS). According to their documentation, "[This SDK now works in the browser. If you'd like to make REST-based requests (pre-recorded transcription, on-premise, and management requests), then you'll need to use a proxy as we do not support custom CORS origins](https://github.com/deepgram/deepgram-js-sdk/blob/af5b1a5b1218a86a9ff140a0a324c4962a1e6ca7/README.md?plain=1#L148)."
+
+> Does this tool use a proxy?
+
+No, `accent` doesn't use a proxy. `accent` is an Electron app. That means `accent` can use Node.js to make API requests without dealing with CORS issues.
+
+> Does this tool use Deepgram's text-to-speech API?
+
+No, it doesn't. Deepgram's text to speech sometimes mispronounces words.
+
 > Does this tool use macOS's built-in text to speech?
 
 No, it doesn't. The built-in text to speech on macOS sounds low-quality.
@@ -133,3 +145,7 @@ No, it doesn't. The built-in text to speech on macOS sounds low-quality.
 > Does this tool use ElevenLabs' text to speech?
 
 Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $330](https://elevenlabs.io/pricing#:~:text=Scale-,%24330/mo,-For%20growing%20publishers), and that's over budget.
+
+> What text-to-speech API does this tool use?
+
+`accent` uses OpenAI's text-to-speech API.
