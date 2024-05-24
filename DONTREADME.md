@@ -110,9 +110,9 @@ This means I take your word's probability and subtract it from 1, which is the p
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
 
-> Does this tool use macOS's built-in speech-to-text?
+> Does this tool use macOS's built-in speech to text?
 
-No, it doesn't. The built-in speech-to-text on macOS doesn't provide word-level probabilities.
+No, it doesn't. The built-in speech to text on macOS doesn't provide word-level probabilities.
 
 > Does this tool use the Whisper API provided by OpenAI?
 
