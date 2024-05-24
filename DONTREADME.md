@@ -52,7 +52,9 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 
 - Motivational Support: Coaches do that keep you motivated, which is important for sticking with your practice.
 
-## Evaluation
+## Functionality
+
+### Evaluation
 
 > Can the pronunciation score take a positive value?
 
@@ -67,22 +69,6 @@ The score is calculated using probability that may include:
 - Reference Speech Probability: This is the probability assigned by the speech-to-text API to each word it successfully transcribes from the reference speech. This probability serves as a benchmark for ideal pronunciation.
 
 But don't worry, you don't have to speak twice, as the saying goes, "measure twice, speak once."
-
-> How many speech-to-text API calls are needed?
-
-2
-
-Here's how it works:
-
-1. The system uses a speech-to-text API to transcribe your voice and get a transcript with probabilities for each word.
-
-1. The system uses a text-to-speech API to generate voice from that transcript.
-
-1. The system uses the same speech-to-text API to transcribe the generated voice and get another transcript with probabilities for each word.
-
-> How many text-to-speech API calls are needed?
-
-1
 
 > Does each word in the user's speech have a corresponding word in the reference speech?
 
@@ -110,6 +96,20 @@ This means I take your word's probability and subtract it from 1, which is the p
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
 
+### Speech-to-Text
+
+> How many speech-to-text API calls are needed?
+
+2
+
+Here's how it works:
+
+1. The system uses a speech-to-text API to transcribe your voice and get a transcript with probabilities for each word.
+
+1. The system uses a text-to-speech API to generate voice from that transcript.
+
+1. The system uses the same speech-to-text API to transcribe the generated voice and get another transcript with probabilities for each word.
+
 > Does this tool use macOS's built-in speech to text?
 
 No, it doesn't. The built-in speech to text on macOS doesn't provide word-level probabilities.
@@ -134,6 +134,16 @@ Nope. Instead of focusing on that, the tool uses an API that has a low word erro
 
 No, `accent` doesn't use a proxy. `accent` is an Electron app. That means `accent` can use Node.js to make API requests without dealing with CORS issues.
 
+> Is this tool built on a streaming API transcription?
+
+Nah, it isn't. Streaming APIs tend to trade off accuracy because they don't take into account the context that comes later.
+
+### Text-to-Speech
+
+> How many text-to-speech API calls are needed?
+
+1
+
 > Does this tool use Deepgram's text-to-speech API?
 
 No, it doesn't. Deepgram's text to speech sometimes mispronounces words.
@@ -149,3 +159,31 @@ Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $33
 > What text-to-speech API does this tool use?
 
 `accent` uses OpenAI's text-to-speech API.
+
+### Recording
+
+> Does this tool store any audio at all?
+
+Yep, `accent` does temporarily store audio, but it uses the Opus format.
+
+> Why Opus and not MP3?
+
+Opus is pretty cool because it allows real-time compression. MP3 needs the whole audio file to get the best encoding.
+
+Plus, Opus gives you a small file size but still keeps the quality high.
+
+For MP3, it's recommended to use 128 kbps for [audiobooks](<https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono)>)/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
+
+> How many times larger is a 128 kbps MP3 file than a 24 kbps Opus file?
+
+It's about 5.3333 times larger.
+
+$$\frac{128\text{ kbps}}{24\text{ kbps}} \approx 5.3333$$
+
+> Is latency linearly proportional to file size?
+
+No, latency does not increase linearly with file size. TCP slow start gradually increases data transmission rate. So, even though MP3 file is larger, the actual latency does not increase proportionally.
+
+> What sample rate is used?
+
+`say` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
