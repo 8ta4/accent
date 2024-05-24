@@ -8,7 +8,7 @@
 
 Nope, `accent` isn't about matching a standard. Here’s why:
 
-- Machine Understandability: As voice tech gets more common, it's important that machines get what you're saying. Accent aims to improve how well speech recognition systems understand you, not just how "correct" your accent sounds.
+- Machine Understandability: As voice tech gets more common, it's important that machines get what you're saying. `accent` aims to improve how well speech recognition systems understand you, not just how "correct" your accent sounds.
 
 - Variability: Pronunciation standards vary widely even among native speakers. Languages and accents evolve. Keeping a up-to-date list of all these variations is a huge task.
 
