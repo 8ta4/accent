@@ -24,7 +24,29 @@
    direnv allow
    ```
 
-1. TODO: Decide which API providers to use.
+1. Copy a Deepgram API key from [the Deepgram website](https://deepgram.com/).
+
+1. Open the `config.yaml` file located in the `accent` directory.
+
+1. Add the following field to the `config.yaml` file, replacing `your_deepgram_api_key` with your actual Deepgram API key:
+
+    ```yaml
+    deepgram: your_deepgram_api_key
+    ```
+
+1. Save the `config.yaml` file.
+
+1. Copy an OpenAI API key from [the OpenAI website](https://platform.openai.com/api-keys).
+
+1. Open the `config.yaml` file located in the `accent` directory again.
+
+1. Add the following field to the `config.yaml` file, replacing `your_openai_api_key` with your actual OpenAI API key:
+
+    ```yaml
+    openai: your_openai_api_key
+    ```
+
+1. Save the `config.yaml` file.
 
 ## Usage
 
