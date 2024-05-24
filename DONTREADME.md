@@ -24,7 +24,7 @@ The goal is to keep response times within 1 second.
 
 > Why a 1-second latency goal?
 
-1 second is pretty much the limit for keeping your flow of thought uninterrupted. Quick feedback is crucial to keep you focused. That's why the interface is tweaked to make things feel faster.
+"[1.0 second is about the limit for the user's flow of thought to stay uninterrupted](https://www.nngroup.com/articles/response-times-3-important-limits/#:~:text=1.0%20second%20is%20about%20the%20limit%20for%20the%20user's%20flow%20of%20thought%20to%20stay%20uninterrupted)". Quick feedback is crucial to keep you focused. That's why the interface is tweaked to make things feel faster.
 
 ### Cost
 
