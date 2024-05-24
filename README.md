@@ -10,6 +10,8 @@
 
 > How do you set up `accent`?
 
+1. Make sure you're using a Mac.
+
 1. Install [devenv](https://github.com/cachix/devenv/blob/2837f4989338aaf03b5b4cf8bad91fe27150d984/docs/getting-started.md#installation).
 
 1. Install [direnv](https://github.com/cachix/devenv/blob/2837f4989338aaf03b5b4cf8bad91fe27150d984/docs/automatic-shell-activation.md#installing-direnv).
