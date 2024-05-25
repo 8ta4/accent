@@ -26,7 +26,7 @@
    direnv allow
    ```
 
-1. Open the `config.yaml` file located in the `accent` directory.
+1. Open `~/.config/accent/config.yaml`.
 
 1. Copy a Deepgram API key from [the Deepgram website](https://deepgram.com/).
 

@@ -174,7 +174,7 @@ Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $33
 
 > Where does this tool store the API keys?
 
-The API keys are stored in `~/.config/say/config.yaml`.
+The API keys are stored in `~/.config/accent/config.yaml`.
 
 > Why choose YAML over JSON for storing the API keys?
 
