@@ -56,6 +56,15 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 
 ### Evaluation
 
+> Why choose **Space** for the keyboard shortcut?
+
+There are a few good reasons:
+
+- It's the only key in the home position for both hands.
+- It's the biggest key on the keyboard.
+
+These make it easy to hit.
+
 > Can the pronunciation score take a positive value?
 
 Yes. The score in the accent tool can totally be positive. Normally, the score is the difference between two probabilities. Since both probabilities are between 0 and 1, the difference will range from -1 to 1.
