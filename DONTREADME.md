@@ -6,7 +6,7 @@
 
 > Does `accent` measure if I'm pronouncing things like a native speaker?
 
-Nope, `accent` isn't about matching a standard. Here’s why:
+Nope, `accent` isn't about matching a standard. Here's why:
 
 - Machine Understandability: As voice tech gets more common, it's important that machines get what you're saying. `accent` aims to improve how well speech recognition systems understand you, not just how "correct" your accent sounds.
 
