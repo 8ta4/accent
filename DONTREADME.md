@@ -61,6 +61,7 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 There are a few good reasons:
 
 - It's the only key in the home position for both hands.
+
 - It's the biggest key on the keyboard.
 
 These make it easy to hit.
@@ -180,6 +181,7 @@ The API keys are stored in `~/.config/say/config.yaml`.
 YAML is better than JSON because it
 
 - allows you to add comments.
+
 - doesn't require extra commas.
 
 > Why the `.yaml` and not `.yml`?
