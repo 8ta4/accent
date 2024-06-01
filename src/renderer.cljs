@@ -1,3 +1,4 @@
 (ns renderer)
 
-(defn init [])
+(defn init []
+  (js/console.log "Initializing renderer"))
