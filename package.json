@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "electron": "^30.0.9",
+    "nodemon": "^3.1.2",
     "shadow-cljs": "2.28.8"
   },
   "main": "out/main.js",
