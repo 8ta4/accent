@@ -3,7 +3,7 @@
  ["src"]
 
  :dependencies
- []
+ [[applied-science/js-interop "0.4.2"]]
 
  :builds
  {:main

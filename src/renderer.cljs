@@ -1,5 +1,6 @@
 (ns renderer
-  (:require [shadow.cljs.modern :refer [js-await]]))
+  (:require [applied-science.js-interop :as j]
+            [shadow.cljs.modern :refer [js-await]]))
 
 (def sample-rate 16000)
 
@@ -9,4 +10,5 @@
             (let [context (js/AudioContext. (clj->js {:sampleRate sample-rate}))]
               (js-await [_ (.audioWorklet.addModule context "audio.js")]
                         (let [processor (js/AudioWorkletNode. context "processor")]
-                          (.connect (.createMediaStreamSource context media) processor))))))
+                          (.connect (.createMediaStreamSource context media) processor)
+                          (j/assoc-in! processor [:port :onmessage] (fn [message])))))))
