@@ -3,7 +3,8 @@
  ["src"]
 
  :dependencies
- [[applied-science/js-interop "0.4.2"]]
+ [[binaryage/devtools "1.0.7"]
+  [applied-science/js-interop "0.4.2"]]
 
  :builds
  {:main
