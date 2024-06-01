@@ -8,6 +8,8 @@
   packages = [
     pkgs.git
     pkgs.gitleaks
+    # JDK is required for shadow-cljs compilation. Without it, shadow-cljs fails with "Unable to locate a Java Runtime."
+    pkgs.jdk
   ];
 
   # https://devenv.sh/scripts/
@@ -16,6 +18,7 @@
   enterShell = ''
     hello
     git --version
+    export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
   '';
 
   # https://devenv.sh/tests/
