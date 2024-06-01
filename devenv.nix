@@ -10,6 +10,7 @@
     pkgs.gitleaks
     # JDK is required for shadow-cljs compilation. Without it, shadow-cljs fails with "Unable to locate a Java Runtime."
     pkgs.jdk
+    pkgs.nodejs
   ];
 
   # https://devenv.sh/scripts/

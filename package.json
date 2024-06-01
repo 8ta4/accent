@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
+    "electron": "^30.0.9",
     "shadow-cljs": "2.28.8"
   }
 }
