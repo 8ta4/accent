@@ -32,17 +32,17 @@
 
 1. Add the following field to the `config.yaml` file, replacing `your_deepgram_api_key` with your actual Deepgram API key:
 
-    ```yaml
-    deepgram: your_deepgram_api_key
-    ```
+   ```yaml
+   deepgram: your_deepgram_api_key
+   ```
 
 1. Copy an OpenAI API key from [the OpenAI website](https://platform.openai.com/api-keys).
 
 1. Add the following field to the `config.yaml` file, replacing `your_openai_api_key` with your actual OpenAI API key:
 
-    ```yaml
-    openai: your_openai_api_key
-    ```
+   ```yaml
+   openai: your_openai_api_key
+   ```
 
 1. Save the `config.yaml` file.
 

@@ -1,0 +1,28 @@
+# https://devenv.sh/integrations/github-actions/#complete-example:~:text=.github/workflows/test,devenv%20shell%20hello
+name: "Test"
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # pin@v4
+      - uses: cachix/install-nix-action@8887e596b4ee1134dae06b98d573bd674693f47c # pin@v26
+      - uses: cachix/cachix-action@18cf96c7c98e048e10a83abd92116114cd8504be # pin@v14
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build the devenv shell and run any pre-commit hooks
+        run: devenv test
+
+      - name: Run a single command in the devenv shell
+        run: devenv shell hello
