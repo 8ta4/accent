@@ -1,6 +1,9 @@
 {
   "devDependencies": {
+    "@eslint/js": "^9.4.0",
     "electron": "^30.0.9",
+    "eslint": "^9.4.0",
+    "globals": "^15.3.0",
     "nodemon": "^3.1.2",
     "shadow-cljs": "2.28.8"
   },
