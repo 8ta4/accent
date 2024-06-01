@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "electron": "^30.0.9",
+    "shadow-cljs": "2.28.8"
+  },
+  "main": "out/main.js",
+  "name": "accent",
+  "private": true,
+  "version": "0.0.1"
+}
