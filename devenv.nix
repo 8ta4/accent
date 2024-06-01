@@ -5,7 +5,10 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [
+    pkgs.git
+    pkgs.gitleaks
+  ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
@@ -29,6 +32,13 @@
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
+  pre-commit.hooks = {
+    gitleaks = {
+      enable = true;
+      # https://github.com/gitleaks/gitleaks/blob/39947b0b0d3f1829438000819c1ba9dbeb023a89/.pre-commit-hooks.yaml#L4
+      entry = "gitleaks protect --verbose --redact --staged";
+    };
+  };
 
   # https://devenv.sh/processes/
   # processes.ping.exec = "ping example.com";
