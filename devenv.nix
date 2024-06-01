@@ -35,6 +35,7 @@
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
   pre-commit.hooks = {
+    cljfmt.enable = true;
     gitleaks = {
       enable = true;
       # https://github.com/gitleaks/gitleaks/blob/39947b0b0d3f1829438000819c1ba9dbeb023a89/.pre-commit-hooks.yaml#L4
