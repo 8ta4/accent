@@ -9,4 +9,7 @@
  {:main
   {:target :node-script
    :output-to "out/main.js"
-   :main main/main}}}
+   :main main/main}
+  :renderer
+  {:target :browser
+   :modules {:renderer {:init-fn renderer/init}}}}}

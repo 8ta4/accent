@@ -1,0 +1,3 @@
+(ns renderer)
+
+(defn init [])
