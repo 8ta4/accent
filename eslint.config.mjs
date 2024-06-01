@@ -6,6 +6,7 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
+        // Added to avoid 'module' is not defined error in .prettierrc.js
         ...globals.node,
       },
     },
