@@ -77,6 +77,7 @@
                                                          :voice "fable"
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
+            (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
                       (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer)))))
 
