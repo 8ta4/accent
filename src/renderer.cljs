@@ -76,5 +76,3 @@
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                                       (push @state message.data)))))))
   (set! js/window.onkeydown handle))
-
-app-temp-directory
