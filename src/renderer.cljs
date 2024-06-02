@@ -43,9 +43,24 @@
 (def extract-alternative
   (comp first :alternatives first :channels :results))
 
+(defn calculate-scores [reference-words user-words]
+  (js/console.log (= (map :word reference-words) (map :word user-words)))
+  (if (= (map :word reference-words) (map :word user-words))
+    (map (fn [reference-word user-word]
+           (specter/transform :score
+                              (fn [score]
+                                (- (inc score) (:confidence reference-word)))
+                              user-word))
+         reference-words
+         user-words)
+    user-words))
+
+(declare state)
+
 (defn handle-reference-transcription [response]
   ;; TODO: Display the pronunciation score in the UI
-  (js/console.log "Reference transcription response:" response))
+  (js/console.log "Reference transcription response:" response)
+  (specter/transform [specter/ATOM :words] (partial calculate-scores (:words (extract-alternative response))) state))
 
 ;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
 ;; Even with nodeIntegration enabled, the following error is encountered:
@@ -58,8 +73,6 @@
              :body body
              :response-format :json
              :keywords? true}))
-
-(declare state)
 
 (defn merge-into-atom
   [map* atom*]
