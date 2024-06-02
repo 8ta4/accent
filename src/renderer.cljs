@@ -8,13 +8,18 @@
             [child_process]
             [cljs-node-io.core :refer [slurp]]
             [yaml]
-            [ajax.core :refer [POST]]))
+            [ajax.core :refer [POST]]
+            [openai :refer [OpenAI]]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
       slurp
       yaml/parse
       (js->clj :keywordize-keys true)))
+
+(def openai
+  (OpenAI. (clj->js {:apiKey (:openai config)
+                     :dangerouslyAllowBrowser true})))
 
 (def sample-rate 16000)
 

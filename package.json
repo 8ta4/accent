@@ -4,6 +4,7 @@
   "private": true,
   "main": "out/main.js",
   "dependencies": {
+    "openai": "^4.47.3",
     "yaml": "^2.4.2"
   },
   "devDependencies": {
