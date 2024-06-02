@@ -139,7 +139,7 @@
                                          :align-items "center"
                                          :m 1}
                                  [:div (:punctuated_word word)]
-                                 [:div (:score word)]])
+                                 [:div (.toFixed (:score word) 2)]])
         (:words @state))])
 
 (defn init []
