@@ -43,7 +43,7 @@
 (def extract-alternative
   (comp first :alternatives first :channels :results))
 
-(defn compare-words [response]
+(defn handle-reference-transcription [response]
   ;; TODO: Display the pronunciation score in the UI
   (js/console.log (:words (extract-alternative response))))
 
@@ -71,14 +71,14 @@
 (defn initialize-score [word]
   (specter/setval :score (- (:confidence word) 1) word))
 
-(defn handler [response]
+(defn handle-user-transcription [response]
   (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "fable"
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request compare-words (js/Buffer.from audio-buffer)))))
+                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -87,7 +87,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (send-deepgram-request handler (fs/readFileSync filepath))))
+                          (send-deepgram-request handle-user-transcription (fs/readFileSync filepath))))
     readable))
 
 (def state
