@@ -9,7 +9,9 @@
             [cljs-node-io.core :refer [slurp]]
             [yaml]
             [ajax.core :refer [POST]]
-            [openai :refer [OpenAI]]))
+            [openai :refer [OpenAI]]
+            [reagent.core :as reagent]
+            [com.rpl.specter :as specter]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
@@ -41,10 +43,25 @@
 (def extract-alternative
   (comp first :alternatives first :channels :results))
 
-(defn compare-words [words response]
-  ;; TODO: Display the pronunciation score in the UI
-  (js/console.log words)
-  (js/console.log (:words (extract-alternative response))))
+(defn calculate-scores [reference-words user-words]
+  (js/console.log "Words equal?")
+  (js/console.log (= (map :word reference-words) (map :word user-words)))
+  (if (= (map :word reference-words) (map :word user-words))
+    (map (fn [reference-word user-word]
+           (specter/transform :score
+                              (fn [score]
+                                (- (inc score) (:confidence reference-word)))
+                              user-word))
+         reference-words
+         user-words)
+    user-words))
+
+(declare state)
+
+(defn handle-reference-transcription [response]
+  (js/console.log "Reference transcription response:")
+  (js/console.log response)
+  (specter/transform [specter/ATOM :words] (partial calculate-scores (:words (extract-alternative response))) state))
 
 ;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
 ;; Even with nodeIntegration enabled, the following error is encountered:
@@ -58,16 +75,27 @@
              :response-format :json
              :keywords? true}))
 
-(defn handler [response]
-  ;; TODO: Display the transcript in the UI
-  (js/console.log (:transcript (extract-alternative response)))
+(defn merge-into-atom
+  [map* atom*]
+  (specter/transform specter/ATOM
+                     (fn [value]
+                       (merge value map*))
+                     atom*))
+
+(defn initialize-score [word]
+  (specter/setval :score (dec (:confidence word)) word))
+
+(defn handle-user-transcription [response]
+  (js/console.log "User transcription response:")
+  (js/console.log response)
+  (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
-                                                         :voice "alloy"
+                                                         :voice "fable"
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
+            (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request (partial compare-words (:words (extract-alternative response)))
-                                             (js/Buffer.from audio-buffer)))))
+                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -76,11 +104,11 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (send-deepgram-request handler (fs/readFileSync filepath))))
+                          (send-deepgram-request handle-user-transcription (fs/readFileSync filepath))))
     readable))
 
 (def state
-  (atom (create-readable)))
+  (reagent/atom {:readable (create-readable)}))
 
 (defn push [readable audio]
   (->> audio
@@ -91,7 +119,7 @@
 
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
-  (.push @state nil))
+  (.push (:readable @state) nil))
 
 (defn handle [event]
   (when (= event.code "Space")
@@ -105,5 +133,5 @@
                         (let [processor (js/AudioWorkletNode. context "processor")]
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                                      (push @state message.data)))))))
+                                                                      (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle))
