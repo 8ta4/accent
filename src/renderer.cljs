@@ -7,7 +7,8 @@
             [path]
             [child_process]
             [cljs-node-io.core :refer [slurp]]
-            [yaml]))
+            [yaml]
+            [ajax.core :refer [POST]]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
@@ -29,13 +30,22 @@
 (defn generate-audio-path []
   (path/join app-temp-directory (generate-audio-filename)))
 
+(def url
+  "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
+
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         filepath (generate-audio-path)
         ffmpeg (child_process/spawn "ffmpeg" (clj->js ["-f" "f32le" "-ar" sample-rate "-i" "pipe:0" "-b:a" "24k" filepath]))]
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
-                          (js/console.log "ffmpeg process closed")))
+                          (js/console.log "ffmpeg process closed")
+                          (POST url {:handler js/console.log
+                                     :headers {:Content-Type "audio/*"
+                                               :Authorization (str "Token " (:deepgram config))}
+                                     :body (fs/readFileSync filepath)
+                                     :response-format :json
+                                     :keywords? true})))
     readable))
 
 (def state
