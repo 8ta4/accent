@@ -44,6 +44,7 @@
   (comp first :alternatives first :channels :results))
 
 (defn calculate-scores [reference-words user-words]
+  (js/console.log "Words equal?")
   (js/console.log (= (map :word reference-words) (map :word user-words)))
   (if (= (map :word reference-words) (map :word user-words))
     (map (fn [reference-word user-word]
