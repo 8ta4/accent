@@ -4,7 +4,9 @@
 
  :dependencies
  [[binaryage/devtools "1.0.7"]
-  [applied-science/js-interop "0.4.2"]]
+  [applied-science/js-interop "0.4.2"]
+  [com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [cljs-ajax "0.8.4"]]
 
  :builds
  {:main
