@@ -42,7 +42,7 @@
 
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
-  (push @state nil))
+  (.push @state nil))
 
 (defn handle [event]
   (when (= event.code "Space")
