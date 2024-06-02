@@ -5,7 +5,15 @@
             [os]
             [fs]
             [path]
-            [child_process]))
+            [child_process]
+            [cljs-node-io.core :refer [slurp]]
+            [yaml]))
+
+(def config
+  (-> (path/join (os/homedir) ".config/accent/config.yaml")
+      slurp
+      yaml/parse
+      (js->clj :keywordize-keys true)))
 
 (def sample-rate 16000)
 
@@ -58,3 +66,5 @@
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                                       (push @state message.data)))))))
   (set! js/window.onkeydown handle))
+
+app-temp-directory
