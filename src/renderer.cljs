@@ -12,7 +12,7 @@
   (when (= event.code "Space")
     (evaluate)))
 
-(def readable
+(def state
   (atom (stream/Readable. (clj->js {:read (fn [])}))))
 
 (defn push [readable audio]
@@ -30,5 +30,5 @@
                         (let [processor (js/AudioWorkletNode. context "processor")]
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                                      (push @readable message.data)))))))
+                                                                      (push @state message.data)))))))
   (set! js/window.onkeydown handle))
