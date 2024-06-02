@@ -9,6 +9,7 @@
             [os]
             [path]
             [reagent.core :as reagent]
+            [reagent.dom.client :as client]
             [shadow.cljs.modern :refer [js-await]]
             [stream]
             [yaml]))
@@ -125,6 +126,9 @@
   (when (= event.code "Space")
     (evaluate)))
 
+(defonce root
+  (client/create-root (js/document.getElementById "app")))
+
 (defn init []
   (js/console.log "Initializing renderer")
   (js-await [media (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
@@ -134,4 +138,6 @@
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                                       (push (:readable @state) message.data)))))))
-  (set! js/window.onkeydown handle))
+  (set! js/window.onkeydown handle)
+  ;; TODO: Implement user interface
+  (client/render root [:div]))
