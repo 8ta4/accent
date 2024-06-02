@@ -50,11 +50,11 @@
 ;; Even with nodeIntegration enabled, the following error is encountered:
 ;; "Due to CORS we are unable to support REST-based API calls to our API from the browser.
 ;; Please consider using a proxy, and including a `restProxy: { url: ''}` in your Deepgram client options."
-(defn send-deepgram-request [handler* filepath]
+(defn send-deepgram-request [handler* body]
   (POST url {:handler handler*
              :headers {:Content-Type "audio/*"
                        :Authorization (str "Token " (:deepgram config))}
-             :body (fs/readFileSync filepath)
+             :body body
              :response-format :json
              :keywords? true}))
 
@@ -66,9 +66,8 @@
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (let [filepath (generate-audio-path)]
-                        (fs/writeFileSync filepath (js/Buffer.from audio-buffer))
-                        (send-deepgram-request (partial compare-words (:words (extract-alternative response))) filepath)))))
+                      (send-deepgram-request (partial compare-words (:words (extract-alternative response)))
+                                             (js/Buffer.from audio-buffer)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -77,7 +76,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (send-deepgram-request handler filepath)))
+                          (send-deepgram-request handler (fs/readFileSync filepath))))
     readable))
 
 (def state
