@@ -141,4 +141,7 @@
                                                                       (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
 ;; TODO: Implement user interface
-  (client/render root [:> Box]))
+  (client/render root [:> Box
+                       (map (fn [word]
+                              ^{:key (:start word)} [:> Box (:word word) (:score word)])
+                            (:words @state))]))
