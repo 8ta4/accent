@@ -130,6 +130,12 @@
 (defonce root
   (client/create-root (js/document.getElementById "app")))
 
+(defn box []
+  [:> Box
+   (map (fn [word]
+          ^{:key (:start word)} [:> Box (:word word) (:score word)])
+        (:words @state))])
+
 (defn init []
   (js/console.log "Initializing renderer")
   (js-await [media (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
@@ -141,7 +147,4 @@
                                                                       (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
 ;; TODO: Implement user interface
-  (client/render root [:> Box
-                       (map (fn [word]
-                              ^{:key (:start word)} [:> Box (:word word) (:score word)])
-                            (:words @state))]))
+  (client/render root [box]))
