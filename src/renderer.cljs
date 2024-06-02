@@ -5,13 +5,6 @@
 
 (def sample-rate 16000)
 
-(defn evaluate []
-  (js/console.log "Evaluating pronunciation..."))
-
-(defn handle [event]
-  (when (= event.code "Space")
-    (evaluate)))
-
 (def state
   (atom (stream/Readable. (clj->js {:read (fn [])}))))
 
@@ -21,6 +14,14 @@
        .-buffer
        js/Buffer.from
        (.push readable)))
+
+(defn evaluate []
+  (js/console.log "Evaluating pronunciation...")
+  (push @state nil))
+
+(defn handle [event]
+  (when (= event.code "Space")
+    (evaluate)))
 
 (defn init []
   (js/console.log "Initializing renderer")
