@@ -19,4 +19,4 @@
                         (let [processor (js/AudioWorkletNode. context "processor")]
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]))))))
-  (.addEventListener js/window "keydown" handle))
+  (set! js/window.onkeydown handle))
