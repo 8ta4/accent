@@ -69,7 +69,7 @@
                      atom*))
 
 (defn initialize-score [word]
-  (specter/setval :score (- (:confidence word) 1) word))
+  (specter/setval :score (dec (:confidence word)) word))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:" response)
