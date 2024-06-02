@@ -109,7 +109,7 @@
                           (send-deepgram-request handle-user-transcription (fs/readFileSync filepath))))
     readable))
 
-(def state
+(defonce state
   (reagent/atom {:readable (create-readable)}))
 
 (defn push [readable audio]
