@@ -1,17 +1,17 @@
 (ns renderer
-  (:require [applied-science.js-interop :as j]
-            [shadow.cljs.modern :refer [js-await]]
-            [stream]
-            [os]
-            [fs]
-            [path]
+  (:require [ajax.core :refer [POST]]
+            [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [slurp]]
-            [yaml]
-            [ajax.core :refer [POST]]
+            [com.rpl.specter :as specter]
+            [fs]
             [openai :refer [OpenAI]]
+            [os]
+            [path]
             [reagent.core :as reagent]
-            [com.rpl.specter :as specter]))
+            [shadow.cljs.modern :refer [js-await]]
+            [stream]
+            [yaml]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
