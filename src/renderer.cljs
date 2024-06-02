@@ -33,6 +33,16 @@
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
 
+(defn handler [response]
+  (let [alternative (-> response
+                        :results
+                        :channels
+                        first
+                        :alternatives
+                        first)]
+    (js/console.log (:transcript alternative))
+    (js/console.log (:words alternative))))
+
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
         filepath (generate-audio-path)
@@ -40,7 +50,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (POST url {:handler js/console.log
+                          (POST url {:handler handler
                                      :headers {:Content-Type "audio/*"
                                                :Authorization (str "Token " (:deepgram config))}
                                      :body (fs/readFileSync filepath)
