@@ -44,9 +44,15 @@
                         :channels
                         first
                         :alternatives
-                        first)]
+                        first)
+        filepath (generate-audio-path)]
     ;; TODO: Manipulate the alternative data structure
-    (js/console.log (:transcript alternative))
+    (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
+                                                           :voice "alloy"
+                                                           :input (:transcript alternative)
+                                                           :response_format "opus"}))]
+              (js-await [audio-buffer (.arrayBuffer opus)]
+                        (fs/writeFileSync filepath (js/Buffer.from audio-buffer))))
     (js/console.log (:words alternative))))
 
 (defn create-readable []
