@@ -8,13 +8,18 @@
             [child_process]
             [cljs-node-io.core :refer [slurp]]
             [yaml]
-            [ajax.core :refer [POST]]))
+            [ajax.core :refer [POST]]
+            [openai :refer [OpenAI]]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
       slurp
       yaml/parse
       (js->clj :keywordize-keys true)))
+
+(def openai
+  (OpenAI. (clj->js {:apiKey (:openai config)
+                     :dangerouslyAllowBrowser true})))
 
 (def sample-rate 16000)
 
@@ -33,16 +38,36 @@
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
 
+(def extract-alternative
+  (comp first :alternatives first :channels :results))
+
+(defn compare-words [words response]
+  ;; TODO: Display the pronunciation score in the UI
+  (js/console.log words)
+  (js/console.log (:words (extract-alternative response))))
+
+;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
+;; Even with nodeIntegration enabled, the following error is encountered:
+;; "Due to CORS we are unable to support REST-based API calls to our API from the browser.
+;; Please consider using a proxy, and including a `restProxy: { url: ''}` in your Deepgram client options."
+(defn send-deepgram-request [handler* body]
+  (POST url {:handler handler*
+             :headers {:Content-Type "audio/*"
+                       :Authorization (str "Token " (:deepgram config))}
+             :body body
+             :response-format :json
+             :keywords? true}))
+
 (defn handler [response]
-  (let [alternative (-> response
-                        :results
-                        :channels
-                        first
-                        :alternatives
-                        first)]
-    ;; TODO: Manipulate the alternative data structure
-    (js/console.log (:transcript alternative))
-    (js/console.log (:words alternative))))
+  ;; TODO: Display the transcript in the UI
+  (js/console.log (:transcript (extract-alternative response)))
+  (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
+                                                         :voice "alloy"
+                                                         :input (:transcript (extract-alternative response))
+                                                         :response_format "opus"}))]
+            (js-await [audio-buffer (.arrayBuffer opus)]
+                      (send-deepgram-request (partial compare-words (:words (extract-alternative response)))
+                                             (js/Buffer.from audio-buffer)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -51,12 +76,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (POST url {:handler handler
-                                     :headers {:Content-Type "audio/*"
-                                               :Authorization (str "Token " (:deepgram config))}
-                                     :body (fs/readFileSync filepath)
-                                     :response-format :json
-                                     :keywords? true})))
+                          (send-deepgram-request handler (fs/readFileSync filepath))))
     readable))
 
 (def state
