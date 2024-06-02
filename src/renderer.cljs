@@ -46,6 +46,10 @@
   (js/console.log words)
   (js/console.log (:words (extract-alternative response))))
 
+;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
+;; Even with nodeIntegration enabled, the following error is encountered:
+;; "Due to CORS we are unable to support REST-based API calls to our API from the browser.
+;; Please consider using a proxy, and including a `restProxy: { url: ''}` in your Deepgram client options."
 (defn send-deepgram-request [handler* filepath]
   (POST url {:handler handler*
              :headers {:Content-Type "audio/*"
