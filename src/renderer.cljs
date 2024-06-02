@@ -1,17 +1,19 @@
 (ns renderer
-  (:require [applied-science.js-interop :as j]
-            [shadow.cljs.modern :refer [js-await]]
-            [stream]
-            [os]
-            [fs]
-            [path]
+  (:require ["@mui/material/Box" :default Box]
+            [ajax.core :refer [POST]]
+            [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [slurp]]
-            [yaml]
-            [ajax.core :refer [POST]]
+            [com.rpl.specter :as specter]
+            [fs]
             [openai :refer [OpenAI]]
+            [os]
+            [path]
             [reagent.core :as reagent]
-            [com.rpl.specter :as specter]))
+            [reagent.dom.client :as client]
+            [shadow.cljs.modern :refer [js-await]]
+            [stream]
+            [yaml]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
@@ -107,7 +109,7 @@
                           (send-deepgram-request handle-user-transcription (fs/readFileSync filepath))))
     readable))
 
-(def state
+(defonce state
   (reagent/atom {:readable (create-readable)}))
 
 (defn push [readable audio]
@@ -125,6 +127,21 @@
   (when (= event.code "Space")
     (evaluate)))
 
+(defonce root
+  (client/create-root (js/document.getElementById "app")))
+
+(defn box []
+  [:> Box
+   {:display "flex"}
+   (map (fn [word]
+          ^{:key (:start word)} [:> Box {:display "flex"
+                                         :flex-direction "column"
+                                         :align-items "center"
+                                         :m 1}
+                                 [:div (:punctuated_word word)]
+                                 [:div (.toFixed (:score word) 2)]])
+        (:words @state))])
+
 (defn init []
   (js/console.log "Initializing renderer")
   (js-await [media (js/navigator.mediaDevices.getUserMedia (clj->js {:audio true}))]
@@ -134,4 +151,6 @@
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                                       (push (:readable @state) message.data)))))))
-  (set! js/window.onkeydown handle))
+  (set! js/window.onkeydown handle)
+;; TODO: Implement user interface
+  (client/render root [box]))
