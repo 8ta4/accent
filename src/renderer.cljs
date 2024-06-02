@@ -132,8 +132,14 @@
 
 (defn box []
   [:> Box
+   {:display "flex"}
    (map (fn [word]
-          ^{:key (:start word)} [:> Box (:word word) (:score word)])
+          ^{:key (:start word)} [:> Box {:display "flex"
+                                         :flex-direction "column"
+                                         :align-items "center"
+                                         :m 1}
+                                 [:div (:punctuated_word word)]
+                                 [:div (:score word)]])
         (:words @state))])
 
 (defn init []
