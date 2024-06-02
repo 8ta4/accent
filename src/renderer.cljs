@@ -42,6 +42,7 @@
   (comp first :alternatives first :channels :results))
 
 (defn compare-words [words response]
+  ;; TODO: Display the pronunciation score in the UI
   (js/console.log words)
   (js/console.log (:words (extract-alternative response))))
 
@@ -54,6 +55,7 @@
              :keywords? true}))
 
 (defn handler [response]
+  ;; TODO: Display the transcript in the UI
   (js/console.log (:transcript (extract-alternative response)))
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "alloy"
