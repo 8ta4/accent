@@ -10,7 +10,8 @@
             [yaml]
             [ajax.core :refer [POST]]
             [openai :refer [OpenAI]]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent]
+            [com.rpl.specter :as specter]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
@@ -59,9 +60,17 @@
              :response-format :json
              :keywords? true}))
 
+(declare state)
+
+(defn merge-into-atom
+  [map* atom*]
+  (specter/transform specter/ATOM
+                     (fn [value]
+                       (merge value map*))
+                     atom*))
+
 (defn handler [response]
-  ;; TODO: Display the transcript in the UI
-  (js/console.log (:transcript (extract-alternative response)))
+  (merge-into-atom (extract-alternative response) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "alloy"
                                                          :input (:transcript (extract-alternative response))
