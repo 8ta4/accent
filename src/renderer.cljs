@@ -1,5 +1,6 @@
 (ns renderer
-  (:require [ajax.core :refer [POST]]
+  (:require ["@mui/material/Box" :default Box]
+            [ajax.core :refer [POST]]
             [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [slurp]]
@@ -140,4 +141,4 @@
                                                                       (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
 ;; TODO: Implement user interface
-  (client/render root [:div]))
+  (client/render root [:> Box]))
