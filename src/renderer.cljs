@@ -1,6 +1,7 @@
 (ns renderer
   (:require [applied-science.js-interop :as j]
-            [shadow.cljs.modern :refer [js-await]]))
+            [shadow.cljs.modern :refer [js-await]]
+            [stream]))
 
 (def sample-rate 16000)
 
@@ -10,6 +11,9 @@
 (defn handle [event]
   (when (= event.code "Space")
     (evaluate)))
+
+(def readable
+  (atom (stream/Readable. (clj->js {:read (fn [])}))))
 
 (defn init []
   (js/console.log "Initializing renderer")

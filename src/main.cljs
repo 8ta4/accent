@@ -6,7 +6,8 @@
              (clj->js
               {:width 800
                :height 600
-               :webPreferences {:nodeIntegration true}}))]
+               :webPreferences {:nodeIntegration true
+                                :contextIsolation false}}))]
     (.loadFile win "public/index.html")))
 
 (defn main []
