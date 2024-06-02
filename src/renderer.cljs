@@ -1,7 +1,10 @@
 (ns renderer
   (:require [applied-science.js-interop :as j]
             [shadow.cljs.modern :refer [js-await]]
-            [stream]))
+            [stream]
+            [os]
+            [fs]
+            [path]))
 
 (def sample-rate 16000)
 
@@ -22,6 +25,18 @@
 (defn handle [event]
   (when (= event.code "Space")
     (evaluate)))
+
+(def temp-directory
+  (os/tmpdir))
+
+(def app-temp-directory
+  (fs/mkdtempSync (path/join temp-directory "accent-")))
+
+(defn generate-audio-filename []
+  (str (random-uuid) ".opus"))
+
+(defn generate-audio-path []
+  (path/join app-temp-directory (generate-audio-filename)))
 
 (defn init []
   (js/console.log "Initializing renderer")
