@@ -81,7 +81,7 @@
     readable))
 
 (def state
-  (reagent/atom (create-readable)))
+  (reagent/atom {:readable (create-readable)}))
 
 (defn push [readable audio]
   (->> audio
@@ -92,7 +92,7 @@
 
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
-  (.push @state nil))
+  (.push (:readable @state) nil))
 
 (defn handle [event]
   (when (= event.code "Space")
@@ -106,5 +106,5 @@
                         (let [processor (js/AudioWorkletNode. context "processor")]
                           (.connect (.createMediaStreamSource context media) processor)
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                                      (push @state message.data)))))))
+                                                                      (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle))
