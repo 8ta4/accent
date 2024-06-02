@@ -68,8 +68,11 @@
                        (merge value map*))
                      atom*))
 
+(defn initialize-score [word]
+  (specter/setval :score (- (:confidence word) 1) word))
+
 (defn handler [response]
-  (merge-into-atom (extract-alternative response) state)
+  (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "alloy"
                                                          :input (:transcript (extract-alternative response))
