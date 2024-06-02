@@ -40,6 +40,7 @@
                         first
                         :alternatives
                         first)]
+    ;; TODO: Manipulate the alternative data structure
     (js/console.log (:transcript alternative))
     (js/console.log (:words alternative))))
 
