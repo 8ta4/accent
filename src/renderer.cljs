@@ -38,22 +38,31 @@
 (def url
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true")
 
+(def extract-alternative
+  (comp first :alternatives first :channels :results))
+
+(defn compare-words [words response]
+  (js/console.log words)
+  (js/console.log (:words (extract-alternative response))))
+
+(defn send-deepgram-request [handler* filepath]
+  (POST url {:handler handler*
+             :headers {:Content-Type "audio/*"
+                       :Authorization (str "Token " (:deepgram config))}
+             :body (fs/readFileSync filepath)
+             :response-format :json
+             :keywords? true}))
+
 (defn handler [response]
-  (let [alternative (-> response
-                        :results
-                        :channels
-                        first
-                        :alternatives
-                        first)
-        filepath (generate-audio-path)]
-    ;; TODO: Manipulate the alternative data structure
-    (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
-                                                           :voice "alloy"
-                                                           :input (:transcript alternative)
-                                                           :response_format "opus"}))]
-              (js-await [audio-buffer (.arrayBuffer opus)]
-                        (fs/writeFileSync filepath (js/Buffer.from audio-buffer))))
-    (js/console.log (:words alternative))))
+  (js/console.log (:transcript (extract-alternative response)))
+  (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
+                                                         :voice "alloy"
+                                                         :input (:transcript (extract-alternative response))
+                                                         :response_format "opus"}))]
+            (js-await [audio-buffer (.arrayBuffer opus)]
+                      (let [filepath (generate-audio-path)]
+                        (fs/writeFileSync filepath (js/Buffer.from audio-buffer))
+                        (send-deepgram-request (partial compare-words (:words (extract-alternative response))) filepath)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -62,12 +71,7 @@
     (.pipe readable ffmpeg.stdin)
     (.on ffmpeg "close" (fn []
                           (js/console.log "ffmpeg process closed")
-                          (POST url {:handler handler
-                                     :headers {:Content-Type "audio/*"
-                                               :Authorization (str "Token " (:deepgram config))}
-                                     :body (fs/readFileSync filepath)
-                                     :response-format :json
-                                     :keywords? true})))
+                          (send-deepgram-request handler filepath)))
     readable))
 
 (def state
