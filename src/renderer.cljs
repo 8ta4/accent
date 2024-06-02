@@ -43,9 +43,8 @@
 (def extract-alternative
   (comp first :alternatives first :channels :results))
 
-(defn compare-words [words response]
+(defn compare-words [response]
   ;; TODO: Display the pronunciation score in the UI
-  (js/console.log words)
   (js/console.log (:words (extract-alternative response))))
 
 ;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
@@ -76,8 +75,7 @@
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request (partial compare-words (:words (extract-alternative response)))
-                                             (js/Buffer.from audio-buffer)))))
+                      (send-deepgram-request compare-words (js/Buffer.from audio-buffer)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
