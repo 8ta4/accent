@@ -18,5 +18,5 @@
   :renderer
   {:target :browser
    :modules {:renderer {:init-fn renderer/init}}
-   ;; https://github.com/thheller/shadow-cljs/issues/376#issuecomment-414696297
+;; https://github.com/thheller/shadow-cljs/issues/376#issuecomment-414696297
    :js-options {:js-provider :require}}}}
