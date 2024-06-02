@@ -9,7 +9,8 @@
             [cljs-node-io.core :refer [slurp]]
             [yaml]
             [ajax.core :refer [POST]]
-            [openai :refer [OpenAI]]))
+            [openai :refer [OpenAI]]
+            [reagent.core :as reagent]))
 
 (def config
   (-> (path/join (os/homedir) ".config/accent/config.yaml")
@@ -80,7 +81,7 @@
     readable))
 
 (def state
-  (atom (create-readable)))
+  (reagent/atom (create-readable)))
 
 (defn push [readable audio]
   (->> audio
