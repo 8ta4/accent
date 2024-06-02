@@ -74,7 +74,7 @@
 (defn handler [response]
   (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
-                                                         :voice "alloy"
+                                                         :voice "fable"
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
             (js-await [audio-buffer (.arrayBuffer opus)]
