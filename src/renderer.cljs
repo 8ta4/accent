@@ -45,7 +45,7 @@
 
 (defn handle-reference-transcription [response]
   ;; TODO: Display the pronunciation score in the UI
-  (js/console.log (:words (extract-alternative response))))
+  (js/console.log "Reference transcription response:" response))
 
 ;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
 ;; Even with nodeIntegration enabled, the following error is encountered:
@@ -72,6 +72,7 @@
   (specter/setval :score (- (:confidence word) 1) word))
 
 (defn handle-user-transcription [response]
+  (js/console.log "User transcription response:" response)
   (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "fable"
