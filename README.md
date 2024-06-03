@@ -24,6 +24,7 @@
    git clone https://github.com/8ta4/accent
    cd accent
    direnv allow
+   build
    mkdir -p ~/.config/accent
    ```
 
