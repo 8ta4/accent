@@ -62,6 +62,6 @@
 
 1. Press **Space** when you want to evaluate your pronunciation up to that moment.
 
-> How do I evaluate my pronunciation the second time?
+> How do I evaluate my pronunciation the second time? (Planned)
 
 After your initial evaluation, simply continue speaking and press **Space** whenever you want feedback on the new segment of speech you've just spoken. Each press of **Space** evaluates only the speech from the end of the last evaluation to the moment you press the key again.
