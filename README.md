@@ -21,9 +21,11 @@
 1. Run the following commands:
 
    ```sh
-   git clone git@github.com:8ta4/accent.git
+   git clone https://github.com/8ta4/accent
    cd accent
    direnv allow
+   build
+   mkdir -p ~/.config/accent
    ```
 
 1. Open `~/.config/accent/config.yaml`.

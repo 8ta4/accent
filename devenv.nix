@@ -17,7 +17,7 @@
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.build.exec = "shadow-cljs compile :main :renderer";
-  scripts.run.exec = ''
+  scripts.accent.exec = ''
     nodemon --watch out --exec 'pkill -f "node_modules/electron"; electron .'
   '';
 
