@@ -56,7 +56,7 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 
 ### Evaluation
 
-> Why choose **Space** for the keyboard shortcut?
+> Why is **Space** used to evaluate pronunciation?
 
 There are a few good reasons:
 
@@ -105,6 +105,10 @@ This means I take your word's probability and subtract it from 1, which is the p
 > Why not use a ratio of probabilities to calculate the pronunciation score?
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
+
+> Why is **Escape** used to clear any inputs that haven't been evaluated yet? (Planned)
+
+**Escape** is a pretty standard choice for canceling stuff.
 
 ### Speech to Text
 
