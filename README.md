@@ -72,11 +72,11 @@ While `accent` itself is free to use, it does depend on the Deepgram API and the
 
 1. Press **Space** when you want to evaluate your pronunciation up to that moment.
 
-> How do I evaluate my pronunciation the second time? (Planned)
+> How do I evaluate my pronunciation the second time?
 
 After your initial evaluation, simply continue speaking and press **Space** whenever you want feedback on the new segment of speech you've just spoken. Each press of **Space** evaluates only the speech from the end of the last evaluation to the moment you press the key again.
 
-> How can I clear any inputs that haven't been evaluated yet? (Planned)
+> How can I clear any inputs that haven't been evaluated yet?
 
 Press **Escape** to clear any inputs that haven't been evaluated yet.
 
