@@ -6,6 +6,16 @@
 
 `accent` is a tool to identify mispronunciations.
 
+## Cost
+
+> What's the cost?
+
+While `accent` itself is free to use, it does depend on the Deepgram API and the OpenAI API, which might have their own charges.
+
+- Deepgram: This app uses Deepgram's speech-to-text Nova 2 model. You get charged based on the total duration of speech processed. Since both your speech and the reference speech are evaluated, you can estimate the cost as twice the duration of your spoken input. For specific rates, check out [Deepgram Pricing](https://deepgram.com/pricing#:~:text=Nova%2D2-,%240.0043/min,-%240.0036/min).
+
+- OpenAI: For converting text to speech, this app uses OpenAI's standard text-to-speech model. You get charged based on the amount of text converted to speech. For specific rates, check out [OpenAI Pricing](https://openai.com/api/pricing/#:~:text=TTS-,%2415.00%20/,1M%20characters,-TTS%20HD).
+
 ## Setup
 
 > How do you set up `accent`?
