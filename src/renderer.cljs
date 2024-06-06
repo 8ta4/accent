@@ -121,7 +121,8 @@
 
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
-  (.push (:readable @state) nil))
+  (.push (:readable @state) nil)
+  (specter/setval [specter/ATOM :readable] (create-readable) state))
 
 (defn handle [event]
   (when (= event.code "Space")
