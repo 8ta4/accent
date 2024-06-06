@@ -153,5 +153,4 @@
                           (j/assoc-in! processor [:port :onmessage] (fn [message]
                                                                       (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
-;; TODO: Implement user interface
   (client/render root [box]))
