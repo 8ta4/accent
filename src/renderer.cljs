@@ -119,14 +119,19 @@
        js/Buffer.from
        (.push readable)))
 
+(defn reset-readable []
+  (specter/setval [specter/ATOM :readable] (create-readable) state))
+
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
   (.push (:readable @state) nil)
-  (specter/setval [specter/ATOM :readable] (create-readable) state))
+  (reset-readable))
 
 (defn handle [event]
-  (when (= event.code "Space")
-    (evaluate)))
+  (case event.code
+    "Space" (evaluate)
+    "Escape" (reset-readable)
+    "default"))
 
 (defonce root
   (client/create-root (js/document.getElementById "app")))
