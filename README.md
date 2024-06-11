@@ -68,6 +68,8 @@ While `accent` itself is free to use, it does depend on the Deepgram API and the
 
 1. Run the command `accent` to start the application.
 
+1. If asked, allow `accent` to access your mic.
+
 1. Start speaking.
 
 1. Press **Space** when you want to evaluate your pronunciation up to that moment.
