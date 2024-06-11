@@ -56,7 +56,7 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 
 ### Evaluation
 
-> Why is **Space** used to evaluate pronunciation?
+> Why is `Space` used to evaluate pronunciation?
 
 There are a few good reasons:
 
@@ -106,9 +106,9 @@ This means I take your word's probability and subtract it from 1, which is the p
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
 
-> Why is **Escape** used to clear any inputs that haven't been evaluated yet?
+> Why is `Escape` used to clear any inputs that haven't been evaluated yet?
 
-**Escape** is a pretty standard choice for canceling stuff.
+`Escape` is a pretty standard choice for canceling stuff.
 
 ### Speech to Text
 
