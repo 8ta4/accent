@@ -54,61 +54,55 @@ No. Here's a list of benefits that personal pronunciation coaches offer that the
 
 ## Functionality
 
-### Evaluation
+### Storage
 
-> Why is `Space` used to evaluate pronunciation?
+> Where does this tool store the API keys?
 
-There are a few good reasons:
+The API keys are stored in `~/.config/accent/config.yaml`.
 
-- It's the only key in the home position for both hands.
+> Why choose YAML over JSON for storing the API keys?
 
-- It's the biggest key on the keyboard.
+YAML is better than JSON because it
 
-These make it easy to hit.
+- allows you to add comments.
 
-> Can the pronunciation score take a positive value?
+- doesn't require extra commas.
 
-Yes. The score in the accent tool can totally be positive. Normally, the score is the difference between two probabilities. Since both probabilities are between 0 and 1, the difference will range from -1 to 1.
+> Why the `.yaml` and not `.yml`?
 
-> What probabilities may be used to calculate the pronunciation score?
+The YAML FAQ recommends "[using '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
 
-The score is calculated using probability that may include:
+> Why not use the `Application Support` directory for the API keys?
 
-- User's Speech Probability: This is the probability assigned by the speech-to-text API to each word it successfully transcribes from your speech. This probability reflects the system's confidence in its transcription of what you said.
+`~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
 
-- Reference Speech Probability: This is the probability assigned by the speech-to-text API to each word it successfully transcribes from the reference speech. This probability serves as a benchmark for ideal pronunciation.
+### Recording
 
-But don't worry, you don't have to speak twice, as the saying goes, "measure twice, speak once."
+> Does this tool store any audio at all?
 
-> Does each word in the user's speech have a corresponding word in the reference speech?
+Yep, `accent` does temporarily store audio, but it uses the Opus format.
 
-Nope, it's not a sure thing. The whole process of turning text to speech and then back to text isn't an involution. Ideally, converting text to speech and then transcribing it back to text should return the original text. But in reality, this back-and-forth can mess things up because the tech isn't flawless.
+> Why Opus and not MP3?
 
-> What is the score when a word in the user's speech has a corresponding word in the reference speech?
+Opus is pretty cool because it allows real-time compression. MP3 needs the whole audio file to get the best encoding.
 
-When there is a corresponding word in the reference speech, here's how I figure out your score:
+Plus, Opus gives you a small file size but still keeps the quality high.
 
-$$\text{Score} = P_{\text{user}} - P_{\text{reference}}$$
+For MP3, it's recommended to use 128 kbps for [audiobooks](<https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono)>)/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
 
-Here, $P_{\text{user}}$ is the probability of your word. That's how sure the system is that it heard you right. And $P_{\text{reference}}$ is the probability of the corresponding word in the reference speech.
+> How many times larger is a 128 kbps MP3 file than a 24 kbps Opus file?
 
-> What is the score when a word in the user's speech does not have a corresponding word in the reference speech?
+It's about 5.3333 times larger.
 
-When there is no corresponding word in the reference speech for a word you said, the score is:
+$$\frac{128\text{ kbps}}{24\text{ kbps}} \approx 5.3333$$
 
-$$\text{Score} = P_{\text{user}} - 1$$
+> Is latency linearly proportional to file size?
 
-Here, $P_{\text{user}}$ is the probability of your word.
+No, latency does not increase linearly with file size. TCP slow start gradually increases data transmission rate. So, even though MP3 file is larger, the actual latency does not increase proportionally.
 
-This means I take your word's probability and subtract it from 1, which is the perfect score, assuming the reference would have been spot on.
+> What sample rate is used?
 
-> Why not use a ratio of probabilities to calculate the pronunciation score?
-
-Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
-
-> Why is `Escape` used to clear any inputs that haven't been evaluated yet?
-
-`Escape` is a pretty standard choice for canceling stuff.
+`accent` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
 
 ### Speech to Text
 
@@ -174,52 +168,58 @@ Nope, because it's too pricey. [For 40 hours of audio a month, it would cost $33
 
 `accent` uses OpenAI's text-to-speech API.
 
-### Storage
+### Evaluation
 
-> Where does this tool store the API keys?
+> Why is `Space` used to evaluate pronunciation?
 
-The API keys are stored in `~/.config/accent/config.yaml`.
+There are a few good reasons:
 
-> Why choose YAML over JSON for storing the API keys?
+- It's the only key in the home position for both hands.
 
-YAML is better than JSON because it
+- It's the biggest key on the keyboard.
 
-- allows you to add comments.
+These make it easy to hit.
 
-- doesn't require extra commas.
+> Can the pronunciation score take a positive value?
 
-> Why the `.yaml` and not `.yml`?
+Yes. The score in the accent tool can totally be positive. Normally, the score is the difference between two probabilities. Since both probabilities are between 0 and 1, the difference will range from -1 to 1.
 
-The YAML FAQ recommends "[using '.yaml' when possible.](https://yaml.org/faq.html#:~:text=Is%20there%20an,yaml%22%20when%20possible.)"
+> What probabilities may be used to calculate the pronunciation score?
 
-> Why not use the `Application Support` directory for the API keys?
+The score is calculated using probability that may include:
 
-`~/.config` is the standard config folder for Unix systems. It's easier to access from the command line.
+- User's Speech Probability: This is the probability assigned by the speech-to-text API to each word it successfully transcribes from your speech. This probability reflects the system's confidence in its transcription of what you said.
 
-### Recording
+- Reference Speech Probability: This is the probability assigned by the speech-to-text API to each word it successfully transcribes from the reference speech. This probability serves as a benchmark for ideal pronunciation.
 
-> Does this tool store any audio at all?
+But don't worry, you don't have to speak twice, as the saying goes, "measure twice, speak once."
 
-Yep, `accent` does temporarily store audio, but it uses the Opus format.
+> Does each word in the user's speech have a corresponding word in the reference speech?
 
-> Why Opus and not MP3?
+Nope, it's not a sure thing. The whole process of turning text to speech and then back to text isn't an involution. Ideally, converting text to speech and then transcribing it back to text should return the original text. But in reality, this back-and-forth can mess things up because the tech isn't flawless.
 
-Opus is pretty cool because it allows real-time compression. MP3 needs the whole audio file to get the best encoding.
+> What is the score when a word in the user's speech has a corresponding word in the reference speech?
 
-Plus, Opus gives you a small file size but still keeps the quality high.
+When there is a corresponding word in the reference speech, here's how I figure out your score:
 
-For MP3, it's recommended to use 128 kbps for [audiobooks](<https://support.google.com/books/partner/answer/7504302#file-formats:~:text=mp3%20(cbr%20preferred)%2C%20%3E%3D128kbps%20(mono)>)/[podcasts](https://learn.acast.com/en/articles/3505536-which-audio-file-format-should-i-use-for-my-podcast#sharing:~:text=we%20recommend%20uploading%20mp3%20files%20with%20a%20bitrate%20of%20128kbps.). But if you're using Opus, you can get away with just 24 Kbps for [audiobooks/podcasts](https://wiki.xiph.org/Opus_Recommended_Settings#Recommended_Bitrates:~:text=down%20this%20page.-,Audiobooks%20%2F%20Podcasts,24,-Bitrates%20from%20here).
+$$\text{Score} = P_{\text{user}} - P_{\text{reference}}$$
 
-> How many times larger is a 128 kbps MP3 file than a 24 kbps Opus file?
+Here, $P_{\text{user}}$ is the probability of your word. That's how sure the system is that it heard you right. And $P_{\text{reference}}$ is the probability of the corresponding word in the reference speech.
 
-It's about 5.3333 times larger.
+> What is the score when a word in the user's speech does not have a corresponding word in the reference speech?
 
-$$\frac{128\text{ kbps}}{24\text{ kbps}} \approx 5.3333$$
+When there is no corresponding word in the reference speech for a word you said, the score is:
 
-> Is latency linearly proportional to file size?
+$$\text{Score} = P_{\text{user}} - 1$$
 
-No, latency does not increase linearly with file size. TCP slow start gradually increases data transmission rate. So, even though MP3 file is larger, the actual latency does not increase proportionally.
+Here, $P_{\text{user}}$ is the probability of your word.
 
-> What sample rate is used?
+This means I take your word's probability and subtract it from 1, which is the perfect score, assuming the reference would have been spot on.
 
-`accent` uses a sample rate of 16 kHz. Google recommends [a sample rate of at least 16 kHz in the audio files that you use for transcription](https://cloud.google.com/speech-to-text/docs/optimizing-audio-files-for-speech-to-text#sample_rate_frequency_range:~:text=We%20recommend%20a%20sample%20rate%20of%20at%20least%2016%20kHz%20in%20the%20audio%20files%20that%20you%20use%20for%20transcription%20with%20Speech%2Dto%2DText.).
+> Why not use a ratio of probabilities to calculate the pronunciation score?
+
+Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
+
+> Why is `Escape` used to clear any inputs that haven't been evaluated yet?
+
+`Escape` is a pretty standard choice for canceling stuff.
