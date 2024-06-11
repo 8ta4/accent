@@ -216,6 +216,8 @@ Here, $P_{\text{user}}$ is the probability of your word.
 
 This means I take your word's probability and subtract it from 1, which is the perfect score, assuming the reference would have been spot on.
 
+### Playback (Planned)
+
 > Why not use a ratio of probabilities to calculate the pronunciation score?
 
 Using a ratio of probabilities sounds neat until you hit a snag where both probabilities are 0. That gives you something like $\frac{0}{0}$, and math doesn't like that. It's undefined.
