@@ -83,3 +83,31 @@ After your initial evaluation, simply continue speaking and press `Space` whenev
 Press `Escape` to clear any inputs that haven't been evaluated yet.
 
 If accessing `Escape` is inconvenient, consider remapping another key to work as `Escape`.
+
+> How do I play the reference speech? (Planned)
+
+Press `f`. This will stop any currently playing speech and start playing the reference speech from the highlighted word.
+
+> How do I play back my speech? (Planned)
+
+Press `d`. This will stop any currently playing speech and start playing the user's speech from the highlighted word.
+
+> How do I stop playback? (Planned)
+
+Press `Esc` to stop any playback.
+
+> How do I move the highlight to the next word? (Planned)
+
+Press `l` to move the highlight to the next word. This is inspired by the Vim command for moving the cursor right.
+
+> How do I move the highlight to the previous word? (Planned)
+
+Press `h` to move the highlight to the previous word. This is inspired by the Vim command for moving the cursor left.
+
+> How do I move the highlight to the last word of the line? (Planned)
+
+Press `$` to move the highlight to the last word of the line. This is inspired by the Vim command for moving the cursor to the end of the line.
+
+> How do I move the highlight to the first word of the line? (Planned)
+
+Press `0` to move the highlight to the first word of the line. This is inspired by the Vim command for moving the cursor to the beginning of the line.
