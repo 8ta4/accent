@@ -92,7 +92,7 @@ Press `f`. This will stop any currently playing speech and start playing the ref
 
 Press `d`. This will stop any currently playing speech and start playing the user's speech from the highlighted word.
 
-> How do I stop playback? (Planned)
+> How do I stop playback?
 
 Press `Esc` to stop any playback.
 
