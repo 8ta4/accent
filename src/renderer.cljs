@@ -87,6 +87,15 @@
 (defn initialize-score [word]
   (specter/setval :score (dec (:confidence word)) word))
 
+(defn play
+  [audio-buffer]
+  (let [audio-context (js/AudioContext.)]
+    (js-await [decoded-data (.decodeAudioData audio-context audio-buffer)]
+              (let [source (.createBufferSource audio-context)]
+                (set! (.-buffer source) decoded-data)
+                (.connect source (.-destination audio-context))
+                (.start source)))))
+
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
