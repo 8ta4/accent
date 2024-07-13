@@ -139,11 +139,15 @@
 (defn play-reference []
   (js/console.log "Playing reference speech"))
 
+(defn play-user []
+  (js/console.log "Playing user speech"))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
     "Escape" (reset-readable)
     "KeyF" (play-reference)
+    "KeyD" (play-user)
     "default"))
 
 (defonce root
