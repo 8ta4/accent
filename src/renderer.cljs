@@ -89,12 +89,15 @@
 
 (defn play
   [audio-buffer]
-  (let [audio-context (js/AudioContext.)]
-    (js-await [decoded-data (.decodeAudioData audio-context audio-buffer)]
-              (let [source (.createBufferSource audio-context)]
-                (set! (.-buffer source) decoded-data)
-                (.connect source (.-destination audio-context))
-                (.start source)))))
+  (let [audio-context (js/AudioContext.)
+        source (.createBufferSource audio-context)]
+;; https://stackoverflow.com/a/10101213
+    (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
+              (set! (.-buffer source) decoded-data)
+              (.connect source (.-destination audio-context))
+              ((:stop @state))
+              (.start source)
+              (specter/setval [specter/ATOM :stop] #(.stop source) state))))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
@@ -106,7 +109,8 @@
                                                          :response_format "opus"}))]
             (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer)))))
+                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer))
+                      (specter/setval [specter/ATOM :play-reference] (partial play audio-buffer) state))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -119,7 +123,9 @@
     readable))
 
 (defonce state
-  (reagent/atom {:readable (create-readable)}))
+  (reagent/atom {:readable (create-readable)
+                 :play-reference (fn [])
+                 :stop (fn [])}))
 
 (defn push [readable audio]
   (->> audio
@@ -137,15 +143,21 @@
   (reset-readable))
 
 (defn play-reference []
-  (js/console.log "Playing reference speech"))
+  (js/console.log "Playing reference speech")
+  ((:play-reference @state)))
 
 (defn play-user []
   (js/console.log "Playing user speech"))
 
+(defn escape []
+  (js/console.log "Escape key pressed.")
+  (reset-readable)
+  ((:stop @state)))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
-    "Escape" (reset-readable)
+    "Escape" (escape)
     "KeyF" (play-reference)
     "KeyD" (play-user)
     "default"))
