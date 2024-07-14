@@ -150,6 +150,7 @@
   (js/console.log "Playing user speech"))
 
 (defn escape []
+  (js/console.log "Escape key pressed.")
   (reset-readable)
   ((:stop @state)))
 
