@@ -95,7 +95,10 @@
     (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
               (set! (.-buffer source) decoded-data)
               (.connect source (.-destination audio-context))
-              (.start source))))
+              (when (:source @state)
+                (.stop (:source @state)))
+              (.start source)
+              (specter/setval [specter/ATOM :source] source state))))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
