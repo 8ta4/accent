@@ -95,10 +95,9 @@
     (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
               (set! (.-buffer source) decoded-data)
               (.connect source (.-destination audio-context))
-              (when (:source @state)
-                (.stop (:source @state)))
+              ((:stop @state))
               (.start source)
-              (specter/setval [specter/ATOM :source] source state))))
+              (specter/setval [specter/ATOM :stop] #(.stop source) state))))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
@@ -111,7 +110,7 @@
             (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
                       (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer))
-                      (specter/setval [specter/ATOM :reference] audio-buffer state))))
+                      (specter/setval [specter/ATOM :play-audio] (partial play audio-buffer) state))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -124,7 +123,9 @@
     readable))
 
 (defonce state
-  (reagent/atom {:readable (create-readable)}))
+  (reagent/atom {:readable (create-readable)
+                 :play-audio (fn [])
+                 :stop (fn [])}))
 
 (defn push [readable audio]
   (->> audio
@@ -143,7 +144,7 @@
 
 (defn play-reference []
   (js/console.log "Playing reference speech")
-  (play (:reference @state)))
+  ((:play-audio @state)))
 
 (defn play-user []
   (js/console.log "Playing user speech"))
