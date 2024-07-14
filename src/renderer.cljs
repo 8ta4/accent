@@ -89,13 +89,13 @@
 
 (defn play
   [audio-buffer]
-  (let [audio-context (js/AudioContext.)]
+  (let [audio-context (js/AudioContext.)
+        source (.createBufferSource audio-context)]
 ;; https://stackoverflow.com/a/10101213
     (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
-              (let [source (.createBufferSource audio-context)]
-                (set! (.-buffer source) decoded-data)
-                (.connect source (.-destination audio-context))
-                (.start source)))))
+              (set! (.-buffer source) decoded-data)
+              (.connect source (.-destination audio-context))
+              (.start source))))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
