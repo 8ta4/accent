@@ -88,16 +88,14 @@
   (specter/setval :score (dec (:confidence word)) word))
 
 (defn play
-  [audio-buffer]
-  (let [audio-context (js/AudioContext.)
-        source (.createBufferSource audio-context)]
-;; https://stackoverflow.com/a/10101213
-    (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
-              (set! (.-buffer source) decoded-data)
-              (.connect source (.-destination audio-context))
-              ((:stop @state))
-              (.start source)
-              (specter/setval [specter/ATOM :stop] #(.stop source) state))))
+  [buffer]
+  (let [context (js/AudioContext.)
+        source (.createBufferSource context)]
+    (set! (.-buffer source) buffer)
+    (.connect source (.-destination context))
+    ((:stop @state))
+    (.start source)
+    (specter/setval [specter/ATOM :stop] #(.stop source) state)))
 
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
@@ -108,9 +106,14 @@
                                                          :input (:transcript (extract-alternative response))
                                                          :response_format "opus"}))]
             (js/console.log "Generated opus audio")
-            (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer))
-                      (specter/setval [specter/ATOM :play-reference] (partial play audio-buffer) state))))
+            (js-await [buffer (.arrayBuffer opus)]
+                      (send-deepgram-request handle-reference-transcription (js/Buffer.from buffer))
+                      (specter/setval [specter/ATOM :play-reference]
+                                      #(let [context (js/AudioContext.)]
+;; https://stackoverflow.com/a/10101213
+                                         (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
+                                                   (play decoded-data)))
+                                      state))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -125,7 +128,8 @@
 (defonce state
   (reagent/atom {:readable (create-readable)
                  :play-reference (fn [])
-                 :stop (fn [])}))
+                 :stop (fn [])
+                 :raw-user-speech []}))
 
 (defn push [readable audio]
   (->> audio
@@ -140,19 +144,34 @@
 (defn evaluate []
   (js/console.log "Evaluating pronunciation...")
   (.push (:readable @state) nil)
-  (reset-readable))
+  (reset-readable)
+  (merge-into-atom {:final-user-speech (:raw-user-speech @state)
+                    :raw-user-speech []}
+                   state))
 
 (defn play-reference []
   (js/console.log "Playing reference speech")
   ((:play-reference @state)))
 
+(def channel
+  0)
+
+(def num-of-channels
+  1)
+
 (defn play-user []
-  (js/console.log "Playing user speech"))
+  (js/console.log "Playing user speech")
+  (let [context (js/AudioContext.)
+        buffer (.createBuffer context num-of-channels (count (:raw-user-speech @state)) sample-rate)
+        channel-data (.getChannelData buffer channel)]
+    (.set channel-data (js/Float32Array. (:final-user-speech @state)))
+    (play buffer)))
 
 (defn escape []
   (js/console.log "Escape key pressed.")
   (reset-readable)
-  ((:stop @state)))
+  ((:stop @state))
+  (specter/setval [specter/ATOM :raw-user-speech] [] state))
 
 (defn handle [event]
   (case event.code
@@ -184,7 +203,12 @@
               (js-await [_ (.audioWorklet.addModule context "audio.js")]
                         (let [processor (js/AudioWorkletNode. context "processor")]
                           (.connect (.createMediaStreamSource context media) processor)
-                          (j/assoc-in! processor [:port :onmessage] (fn [message]
-                                                                      (push (:readable @state) message.data)))))))
+                          (j/assoc-in! processor
+                                       [:port :onmessage]
+                                       (fn [message]
+                                         (specter/setval [specter/ATOM :raw-user-speech specter/END]
+                                                         message.data
+                                                         state)
+                                         (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
   (client/render root [box]))
