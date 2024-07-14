@@ -149,10 +149,14 @@
 (defn play-user []
   (js/console.log "Playing user speech"))
 
+(defn escape []
+  (reset-readable)
+  ((:stop @state)))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
-    "Escape" (reset-readable)
+    "Escape" (escape)
     "KeyF" (play-reference)
     "KeyD" (play-user)
     "default"))
