@@ -90,7 +90,7 @@
 (defn play
   [audio-buffer]
   (let [audio-context (js/AudioContext.)]
-    (js-await [decoded-data (.decodeAudioData audio-context audio-buffer)]
+    (js-await [decoded-data (.decodeAudioData audio-context (.slice audio-buffer 0))]
               (let [source (.createBufferSource audio-context)]
                 (set! (.-buffer source) decoded-data)
                 (.connect source (.-destination audio-context))
@@ -106,7 +106,8 @@
                                                          :response_format "opus"}))]
             (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
-                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer)))))
+                      (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer))
+                      (specter/setval [specter/ATOM :audio-buffer] audio-buffer state))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
