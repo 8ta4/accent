@@ -162,7 +162,7 @@
 (defn play-user []
   (js/console.log "Playing user speech")
   (let [context (js/AudioContext.)
-        buffer (.createBuffer context num-of-channels (count (:raw-user-speech @state)) sample-rate)
+        buffer (.createBuffer context num-of-channels (count (:final-user-speech @state)) sample-rate)
         channel-data (.getChannelData buffer channel)]
     (.set channel-data (js/Float32Array. (:final-user-speech @state)))
     (play buffer)))
