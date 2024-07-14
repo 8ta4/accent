@@ -136,14 +136,18 @@
   (.push (:readable @state) nil)
   (reset-readable))
 
-(defn play-reference-speech []
+(defn play-reference []
   (js/console.log "Playing reference speech"))
+
+(defn play-user []
+  (js/console.log "Playing user speech"))
 
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
     "Escape" (reset-readable)
-    "KeyF" (play-reference-speech)
+    "KeyF" (play-reference)
+    "KeyD" (play-user)
     "default"))
 
 (defonce root
