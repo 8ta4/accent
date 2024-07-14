@@ -108,7 +108,7 @@
             (js/console.log "Generated opus audio")
             (js-await [audio-buffer (.arrayBuffer opus)]
                       (send-deepgram-request handle-reference-transcription (js/Buffer.from audio-buffer))
-                      (specter/setval [specter/ATOM :play] (partial play audio-buffer) state))))
+                      (specter/setval [specter/ATOM :reference] audio-buffer state))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -140,7 +140,7 @@
 
 (defn play-reference []
   (js/console.log "Playing reference speech")
-  ((:play @state)))
+  (play (:reference @state)))
 
 (defn play-user []
   (js/console.log "Playing user speech"))
