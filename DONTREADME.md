@@ -226,7 +226,7 @@ The scoring system sticks to natural numbers including 0 because they form a sim
 
 When there is a corresponding word in the reference speech, here's how I figure out your pronunciation score:
 
-$$\text{Score} = P_{\text{user}} - P_{\text{reference}}$$
+$$P_{\text{user}} - P_{\text{reference}}$$
 
 Here, $P_{\text{user}}$ is the probability of your word. That's how sure the system is that it heard you right. And $P_{\text{reference}}$ is the probability of the corresponding word in the reference speech.
 
@@ -234,7 +234,7 @@ Here, $P_{\text{user}}$ is the probability of your word. That's how sure the sys
 
 When there is no corresponding word in the reference speech for a word you said, the pronunciation score is:
 
-$$\text{Score} = P_{\text{user}} - 1$$
+$$P_{\text{user}} - 1$$
 
 Here, $P_{\text{user}}$ is the probability of your word.
 
