@@ -198,27 +198,27 @@ But don't worry, you don't have to speak twice, as the saying goes, "measure twi
 
 Nope, it's not a sure thing. The whole process of turning text to speech and then back to text isn't an involution. Ideally, converting text to speech and then transcribing it back to text should return the original text. But in reality, this back-and-forth can mess things up because the tech isn't flawless. That's why I do my best to align these potentially mismatched word sequences.
 
-> What algorithm is used to align the word sequences of the user's speech and the reference speech?
+> What algorithm is used to align the word sequences of the user's speech and the reference speech? (Planned)
 
 The Needleman-Wunsch algorithm aligns the user's speech with the reference speech. the word sequences of the user's speech with the reference speech. The goal is to maximize the number of word matches between these two sequences.
 
-> Why maximize the number of word matches?
+> Why maximize the number of word matches? (Planned)
 
 Maximizing the number of word matches allows for better comparisons between the user's pronunciation and the reference. When there's a match between a word in the user's speech sequence and the reference speech sequence, I can compare their probability scores. If there's no match for a word, I'd have to use just the raw probability score from the user's speech for that word. That raw score might not accurately reflect pronunciation quality, especially for words that are inherently difficult to transcribe.
 
-> What's the alignment score for matches?
+> What's the alignment score for matches? (Planned)
 
 Word matches get a score of 1. I chose 1 because it's the simplest positive integer. Using 1 lets me assign non-negative integer scores to word mismatches and gaps in the sequence alignment.
 
-> What's the alignment score for mismatches?
+> What's the alignment score for mismatches? (Planned)
 
 Word mismatches get a score of 0.
 
-> What's the alignment score for gaps?
+> What's the alignment score for gaps? (Planned)
 
 Gaps also get a 0. I treat gaps and mismatches the same since the main focus is on maximizing matches.
 
-> Why doesn't the alignment scoring system use negative numbers?
+> Why doesn't the alignment scoring system use negative numbers? (Planned)
 
 The scoring system sticks to natural numbers including 0 because they form a simpler number system than integers.
 
@@ -239,8 +239,6 @@ $$P_{\text{user}} - 1$$
 Here, $P_{\text{user}}$ is the probability of your word.
 
 This means I take your word's probability and subtract it from 1, which is the perfect score, assuming the reference would have been spot on.
-
-### Playback (Planned)
 
 > Why not use a ratio of probabilities to calculate the pronunciation score?
 
