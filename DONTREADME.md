@@ -247,3 +247,9 @@ Using a ratio of probabilities sounds neat until you hit a snag where both proba
 > Why is `Escape` used to clear any inputs that haven't been evaluated yet?
 
 `Escape` is a pretty standard choice for canceling stuff.
+
+### Playback
+
+> Will I listen to my speech or the reference speech more often?
+
+You'll probably listen to the reference speech more often. The idea is to mimic the reference speech, so you'll be listening to it frequently to get the pronunciation right. You'd only play back your own speech to check for mistakes. Since the reference speech is used more often, it's assigned to the f key, which is easily pressed by the stronger index finger. The user's speech is less frequently used, so it's assigned to the d key, which is pressed by a slightly weaker finger.
