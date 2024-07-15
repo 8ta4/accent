@@ -206,15 +206,15 @@ The Needleman-Wunsch algorithm aligns the user's speech with the reference speec
 
 Maximizing the number of word matches allows for better comparisons between the user's pronunciation and the reference. When there's a match between a word in the user's speech sequence and the reference speech sequence, I can compare their probability scores. If there's no match for a word, I'd have to use just the raw probability score from the user's speech for that word. That raw score might not accurately reflect pronunciation quality, especially for words that are inherently difficult to transcribe.
 
-> What's the score for matches?
+> What's the alignment score for matches?
 
 Word matches get a score of 1. I chose 1 because it's the simplest positive integer. Using 1 lets me assign non-negative integer scores to word mismatches and gaps in the sequence alignment.
 
-> What's the score for mismatches?
+> What's the alignment score for mismatches?
 
 Word mismatches get a score of 0.
 
-> What's the score for gaps?
+> What's the alignment score for gaps?
 
 Gaps also get a 0. I treat gaps and mismatches the same since the main focus is on maximizing matches.
 
@@ -222,17 +222,17 @@ Gaps also get a 0. I treat gaps and mismatches the same since the main focus is 
 
 The scoring system sticks to natural numbers including 0 because they form a simpler number system than integers.
 
-> What is the score when a word in the user's speech has a corresponding word in the reference speech?
+> What is the pronunciation score when a word in the user's speech has a corresponding word in the reference speech?
 
-When there is a corresponding word in the reference speech, here's how I figure out your score:
+When there is a corresponding word in the reference speech, here's how I figure out your pronunciation score:
 
 $$\text{Score} = P_{\text{user}} - P_{\text{reference}}$$
 
 Here, $P_{\text{user}}$ is the probability of your word. That's how sure the system is that it heard you right. And $P_{\text{reference}}$ is the probability of the corresponding word in the reference speech.
 
-> What is the score when a word in the user's speech does not have a corresponding word in the reference speech?
+> What is the pronunciation score when a word in the user's speech does not have a corresponding word in the reference speech?
 
-When there is no corresponding word in the reference speech for a word you said, the score is:
+When there is no corresponding word in the reference speech for a word you said, the pronunciation score is:
 
 $$\text{Score} = P_{\text{user}} - 1$$
 
