@@ -3,5 +3,6 @@
 (defn align
   [x y]
 ;; TODO: Implement alignment
-  (cons (repeat (inc (count x)) {:score 0}) (repeat (count y) (cons {:score 0} (repeat (count x) {}))))
+  (cons (cons {:score 0} (map (fn [j] {:score 0 :trace [0 j]}) (range (count x))))
+        (map (fn [i] (cons {:score 0 :trace [i 0]} (repeat (count x) {}))) (range (count y))))
   [])
