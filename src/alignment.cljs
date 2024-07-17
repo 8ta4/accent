@@ -56,14 +56,8 @@
 
 (defn trace
   [x y matrix]
-  (trace* []
-          [(count y)
-           (count x)]
-          x
-          y
-          matrix))
+  (trace* [] [(count y) (count x)] x y matrix))
 
 (defn align
   [x y]
-;; TODO: Implement alignment
   (trace x y (finalize (initialize x y))))
