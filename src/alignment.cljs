@@ -13,7 +13,7 @@
   (specter/setval [(specter/nthpath i j)]
                   (max-key :score
                            (specter/transform :score
-                                              (if (= (nth x (dec i)) (nth y (dec j)))
+                                              (if (= (nth x (dec j)) (nth y (dec i)))
                                                 inc
                                                 identity)
                                               (set-previous [(dec i) (dec j)]
