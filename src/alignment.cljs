@@ -1,20 +1,6 @@
 (ns alignment
   (:require [com.rpl.specter :as specter]))
 
-(defn trace
-  [alignment [i j] x y matrix]
-  (if (and (= i 0) (= j 0))
-    alignment
-    (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
-      (recur (cond
-               (= i i*) (cons [(nth x (dec j)) nil] alignment)
-               (= j j*) (cons [nil (nth y (dec i))] alignment)
-               :else (cons [(nth x (dec i)) (nth y (dec j))] alignment))
-             previous
-             x
-             y
-             matrix))))
-
 (def llast
   (comp last last))
 
@@ -23,32 +9,62 @@
   (specter/setval :previous previous (nth (nth matrix i) j)))
 
 (defn set-entry
-  [[i j] matrix]
+  [[i j] x y matrix]
   (specter/setval [(specter/nthpath i j)]
                   (max-key :score
-                           (specter/transform :score inc (set-previous [(dec i) (dec j)] matrix))
+                           (specter/transform :score
+                                              (if (= (nth x (dec j)) (nth y (dec i)))
+                                                inc
+                                                identity)
+                                              (set-previous [(dec i) (dec j)]
+                                                            matrix))
                            (set-previous [(dec i) j] matrix)
                            (set-previous [i (dec j)] matrix))
                   matrix))
 
-(defn set-entries
-  [matrix]
+(defn finalize*
+  [[i j] x y matrix]
   (if (:score (llast matrix))
     matrix
-    (set-entry [1 1] matrix)))
+    (recur (if (= j (dec (count (first matrix))))
+             [(inc i) 1]
+             [i (inc j)])
+           x
+           y
+           (set-entry [i j] x y matrix))))
+
+(def finalize
+  (partial finalize* [1 1]))
+
+(defn initialize
+  [x y]
+  (cons (cons {:score 0}
+              (map (fn [j]
+                     {:score 0 :previous [0 j]})
+                   (range (count x))))
+        (map (fn [i]
+               (cons {:score 0 :previous [i 0]} (repeat (count x) {})))
+             (range (count y)))))
+
+(defn trace*
+  [alignment [i j] x y matrix]
+  (if (and (= i 0) (= j 0))
+    alignment
+    (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
+      (recur (cons (cond
+                     (= i i*) [(nth x (dec j)) nil]
+                     (= j j*) [nil (nth y (dec i))]
+                     :else [(nth x (dec j)) (nth y (dec i))])
+                   alignment)
+             previous
+             x
+             y
+             matrix))))
+
+(defn trace
+  [x y matrix]
+  (trace* [] [(count y) (count x)] x y matrix))
 
 (defn align
   [x y]
-;; TODO: Implement alignment
-  (trace []
-         [(count y)
-          (count x)]
-         x
-         y
-         (set-entries (cons (cons {:score 0}
-                                  (map (fn [j]
-                                         {:score 0 :previous [0 j]})
-                                       (range (count x))))
-                            (map (fn [i]
-                                   (cons {:score 0 :previous [i 0]} (repeat (count x) {})))
-                                 (range (count y)))))))
+  (trace x y (finalize x y (initialize x y))))
