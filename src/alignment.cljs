@@ -9,22 +9,29 @@
   (specter/setval :previous previous (nth (nth matrix i) j)))
 
 (defn set-entry
-  [[i j] matrix]
+  [[i j] x y matrix]
   (specter/setval [(specter/nthpath i j)]
                   (max-key :score
-                           (specter/transform :score inc (set-previous [(dec i) (dec j)] matrix))
+                           (specter/transform :score
+                                              (if (= (nth x (dec i)) (nth y (dec j)))
+                                                inc
+                                                identity)
+                                              (set-previous [(dec i) (dec j)]
+                                                            matrix))
                            (set-previous [(dec i) j] matrix)
                            (set-previous [i (dec j)] matrix))
                   matrix))
 
 (defn finalize*
-  [[i j] matrix]
+  [[i j] x y matrix]
   (if (:score (llast matrix))
     matrix
     (recur (if (= j (dec (count (first matrix))))
              [(inc i) 1]
              [i (inc j)])
-           (set-entry [i j] matrix))))
+           x
+           y
+           (set-entry [i j] x y matrix))))
 
 (def finalize
   (partial finalize* [1 1]))
@@ -60,4 +67,4 @@
 
 (defn align
   [x y]
-  (trace x y (finalize (initialize x y))))
+  (trace x y (finalize x y (initialize x y))))
