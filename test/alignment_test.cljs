@@ -6,4 +6,5 @@
   (is (= (alignment/align [] []) []))
   (is (= (alignment/align [:a] []) [[:a nil]]))
   (is (= (alignment/align [] [:a]) [[nil :a]]))
-  (is (= (alignment/align [:a] [:a]) [[:a :a]])))
+  (is (= (alignment/align [:a] [:a]) [[:a :a]]))
+  (is (= (alignment/align [:a :a] []) [[:a nil] [:a nil]])))

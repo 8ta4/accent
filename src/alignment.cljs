@@ -17,11 +17,17 @@
                            (set-previous [i (dec j)] matrix))
                   matrix))
 
-(defn finalize
-  [matrix]
+(defn finalize*
+  [[i j] matrix]
   (if (:score (llast matrix))
     matrix
-    (set-entry [1 1] matrix)))
+    (recur (if (= j (dec (count (first matrix))))
+             [(inc i) 1]
+             [i (inc j)])
+           (set-entry [i j] matrix))))
+
+(def finalize
+  (partial finalize* [1 1]))
 
 (defn initialize
   [x y]
