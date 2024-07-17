@@ -14,6 +14,9 @@
              y
              matrix))))
 
+(def llast
+  (comp last last))
+
 (defn align
   [x y]
 ;; TODO: Implement alignment
