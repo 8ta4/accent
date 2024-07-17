@@ -1,15 +1,17 @@
 (ns alignment)
 
 (defn trace
-  [alignment [i j] matrix]
+  [alignment [i j] x y matrix]
   (if (and (= i 0) (= j 0))
     alignment
     (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
       (recur (cond
-               (= i i*) alignment
-               (= j j*) alignment
+               (= i i*) (cons [(nth x i) nil] alignment)
+               (= j j*) (cons [nil (nth y j)] alignment)
                :else alignment)
              previous
+             x
+             y
              matrix))))
 
 (defn align
@@ -18,6 +20,8 @@
   (trace []
          [(count y)
           (count x)]
+         x
+         y
          (cons (cons {:score 0}
                      (map (fn [j]
                             {:score 0 :previous [0 j]})
