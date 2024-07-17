@@ -31,11 +31,21 @@
                            (set-previous [i (dec j)] matrix))
                   matrix))
 
-(defn set-entries
+(defn finalize
   [matrix]
   (if (:score (llast matrix))
     matrix
     (set-entry [1 1] matrix)))
+
+(defn initialize
+  [x y]
+  (cons (cons {:score 0}
+              (map (fn [j]
+                     {:score 0 :previous [0 j]})
+                   (range (count x))))
+        (map (fn [i]
+               (cons {:score 0 :previous [i 0]} (repeat (count x) {})))
+             (range (count y)))))
 
 (defn align
   [x y]
@@ -45,10 +55,4 @@
           (count x)]
          x
          y
-         (set-entries (cons (cons {:score 0}
-                                  (map (fn [j]
-                                         {:score 0 :previous [0 j]})
-                                       (range (count x))))
-                            (map (fn [i]
-                                   (cons {:score 0 :previous [i 0]} (repeat (count x) {})))
-                                 (range (count y)))))))
+         (finalize (initialize x y))))
