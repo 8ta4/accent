@@ -31,6 +31,7 @@
   # https://devenv.sh/tests/
   enterTest = ''
     echo "Running tests"
+    shadow-cljs compile :test
   '';
 
   # https://devenv.sh/services/

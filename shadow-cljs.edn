@@ -1,6 +1,6 @@
 ;; shadow-cljs configuration
 {:source-paths
- ["src"]
+ ["src" "test"]
 
  :dependencies
  [[binaryage/devtools "1.0.7"]
@@ -20,4 +20,9 @@
    :modules {:renderer {:init-fn renderer/init}}
    :devtools {:after-load renderer/init}
 ;; https://github.com/thheller/shadow-cljs/issues/376#issuecomment-414696297
-   :js-options {:js-provider :require}}}}
+   :js-options {:js-provider :require}}
+  :test
+  {:target    :node-test
+;; https://github.com/shadow-cljs/shadow-cljs.github.io/blob/dd4be69c0144dc0b0ae1cbe8a715eb2be7608ece/docs/target-node-test.adoc?plain=1#L18
+   :output-to "out/node-tests.js"
+   :autorun   true}}}
