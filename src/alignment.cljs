@@ -54,7 +54,7 @@
       (recur (cons (cond
                      (= i i*) [(nth x (dec j)) nil]
                      (= j j*) [nil (nth y (dec i))]
-                     :else [(nth x (dec i)) (nth y (dec j))])
+                     :else [(nth x (dec j)) (nth y (dec i))])
                    alignment)
              previous
              x
