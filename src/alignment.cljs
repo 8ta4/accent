@@ -38,10 +38,11 @@
   (if (and (= i 0) (= j 0))
     alignment
     (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
-      (recur (cond
-               (= i i*) (cons [(nth x (dec j)) nil] alignment)
-               (= j j*) (cons [nil (nth y (dec i))] alignment)
-               :else (cons [(nth x (dec i)) (nth y (dec j))] alignment))
+      (recur (cons (cond
+                     (= i i*) [(nth x (dec j)) nil]
+                     (= j j*) [nil (nth y (dec i))]
+                     :else [(nth x (dec i)) (nth y (dec j))])
+                   alignment)
              previous
              x
              y
