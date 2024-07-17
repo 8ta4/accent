@@ -1,20 +1,6 @@
 (ns alignment
   (:require [com.rpl.specter :as specter]))
 
-(defn trace
-  [alignment [i j] x y matrix]
-  (if (and (= i 0) (= j 0))
-    alignment
-    (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
-      (recur (cond
-               (= i i*) (cons [(nth x (dec j)) nil] alignment)
-               (= j j*) (cons [nil (nth y (dec i))] alignment)
-               :else (cons [(nth x (dec i)) (nth y (dec j))] alignment))
-             previous
-             x
-             y
-             matrix))))
-
 (def llast
   (comp last last))
 
@@ -47,12 +33,30 @@
                (cons {:score 0 :previous [i 0]} (repeat (count x) {})))
              (range (count y)))))
 
+(defn trace*
+  [alignment [i j] x y matrix]
+  (if (and (= i 0) (= j 0))
+    alignment
+    (let [[i* j* :as previous] (:previous (nth (nth matrix i) j))]
+      (recur (cond
+               (= i i*) (cons [(nth x (dec j)) nil] alignment)
+               (= j j*) (cons [nil (nth y (dec i))] alignment)
+               :else (cons [(nth x (dec i)) (nth y (dec j))] alignment))
+             previous
+             x
+             y
+             matrix))))
+
+(defn trace
+  [x y matrix]
+  (trace* []
+          [(count y)
+           (count x)]
+          x
+          y
+          matrix))
+
 (defn align
   [x y]
 ;; TODO: Implement alignment
-  (trace []
-         [(count y)
-          (count x)]
-         x
-         y
-         (finalize (initialize x y))))
+  (trace x y (finalize (initialize x y))))
