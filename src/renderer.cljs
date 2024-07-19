@@ -53,7 +53,10 @@
                        (if user-word
                          [(specter/transform :score
                                              (if reference-word
-                                               #(- (inc %) (:confidence (first (:reference-words context))))
+                                               #(- (inc %) (->> context
+                                                                :reference-words
+                                                                first
+                                                                :confidence))
                                                identity)
                                              (first (:user-words context)))]
                          []))
