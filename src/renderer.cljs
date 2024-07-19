@@ -100,7 +100,7 @@
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
-  (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
+  (merge-into-atom (specter/transform [:words specter/ALL] initialize-score (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "fable"
                                                          :input (:transcript (extract-alternative response))
