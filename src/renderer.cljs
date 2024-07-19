@@ -51,14 +51,16 @@
   (->> context
        (specter/setval [:results specter/END]
                        (if user-word
-                         [(specter/transform :score
-                                             (if reference-word
-                                               #(- (inc %) (->> context
-                                                                :reference-words
-                                                                first
-                                                                :confidence))
-                                               identity)
-                                             (first (:user-words context)))]
+                         [(->> context
+                               :user-words
+                               first
+                               (specter/transform :score
+                                                  (if reference-word
+                                                    #(- (inc %) (->> context
+                                                                     :reference-words
+                                                                     first
+                                                                     :confidence))
+                                                    identity)))]
                          []))
        (specter/transform :user-words (if user-word
                                         rest
