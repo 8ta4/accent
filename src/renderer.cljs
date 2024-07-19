@@ -1,6 +1,7 @@
 (ns renderer
   (:require ["@mui/material/Box" :default Box]
             [ajax.core :refer [POST]]
+            [alignment]
             [applied-science.js-interop :as j]
             [child_process]
             [cljs-node-io.core :refer [slurp]]
@@ -45,25 +46,45 @@
 (def extract-alternative
   (comp first :alternatives first :channels :results))
 
-(defn calculate-scores [reference-words user-words]
-  (js/console.log "Words equal?")
-  (js/console.log (= (map :word reference-words) (map :word user-words)))
-  (if (= (map :word reference-words) (map :word user-words))
-    (map (fn [reference-word user-word]
-           (specter/transform :score
-                              (fn [score]
-                                (- (inc score) (:confidence reference-word)))
-                              user-word))
-         reference-words
-         user-words)
-    user-words))
+(defn update-context
+  [context [user-word reference-word]]
+  (->> context
+       (specter/setval [:results specter/END]
+                       (if user-word
+                         [(->> context
+                               :user-words
+                               first
+                               (specter/transform :score
+                                                  (if reference-word
+                                                    #(- (inc %) (->> context
+                                                                     :reference-words
+                                                                     first
+                                                                     :confidence))
+                                                    identity)))]
+                         []))
+       (specter/transform :user-words (if user-word
+                                        rest
+                                        identity))
+       (specter/transform :reference-words (if reference-word
+                                             rest
+                                             identity))))
+
+(defn match-words [user-words reference-words]
+  (->> (alignment/align (map :word user-words) (map :word reference-words))
+       (reduce update-context
+               {:results []
+                :user-words user-words
+                :reference-words reference-words})
+       :results))
 
 (declare state)
 
 (defn handle-reference-transcription [response]
   (js/console.log "Reference transcription response:")
   (js/console.log response)
-  (specter/transform [specter/ATOM :words] (partial calculate-scores (:words (extract-alternative response))) state))
+  (specter/transform [specter/ATOM :words]
+                     #(match-words % (:words (extract-alternative response)))
+                     state))
 
 ;; The Deepgram JavaScript SDK is not used because it requires a proxy due to CORS restrictions.
 ;; Even with nodeIntegration enabled, the following error is encountered:
@@ -100,7 +121,7 @@
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
-  (merge-into-atom (specter/transform :words (partial map initialize-score) (extract-alternative response)) state)
+  (merge-into-atom (specter/transform [:words specter/ALL] initialize-score (extract-alternative response)) state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "fable"
                                                          :input (:transcript (extract-alternative response))
