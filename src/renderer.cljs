@@ -1,5 +1,7 @@
 (ns renderer
   (:require ["@mui/material/Box" :default Box]
+            ["@mui/material/CssBaseline" :default CssBaseline]
+            ["@mui/material/styles" :refer [createTheme ThemeProvider]]
             [ajax.core :refer [POST]]
             [alignment]
             [applied-science.js-interop :as j]
@@ -205,17 +207,22 @@
 (defonce root
   (client/create-root (js/document.getElementById "app")))
 
+(def dark-theme
+  (createTheme (clj->js {:palette {:mode "dark"}})))
+
 (defn box []
-  [:> Box
-   {:display "flex"}
-   (map (fn [word]
-          ^{:key (:start word)} [:> Box {:display "flex"
-                                         :flex-direction "column"
-                                         :align-items "center"
-                                         :m 1}
-                                 [:div (:punctuated_word word)]
-                                 [:div (.toFixed (:score word) 2)]])
-        (:words @state))])
+  [:> ThemeProvider {:theme dark-theme}
+   [:> CssBaseline]
+   [:> Box
+    {:display "flex"}
+    (map (fn [word]
+           ^{:key (:start word)} [:> Box {:display "flex"
+                                          :flex-direction "column"
+                                          :align-items "center"
+                                          :m 1}
+                                  [:div (:punctuated_word word)]
+                                  [:div (.toFixed (:score word) 2)]])
+         (:words @state))]])
 
 (defn init []
   (js/console.log "Initializing renderer")
