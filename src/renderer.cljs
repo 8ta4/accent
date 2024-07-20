@@ -123,7 +123,11 @@
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
-  (merge-into-atom (specter/transform [:words specter/ALL] initialize-score (extract-alternative response)) state)
+  (merge-into-atom (->> response
+                        extract-alternative
+                        (specter/transform [:words specter/ALL] initialize-score)
+                        (specter/setval :index 0))
+                   state)
   (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
                                                          :voice "fable"
                                                          :input (:transcript (extract-alternative response))
@@ -215,14 +219,18 @@
    [:> CssBaseline]
    [:> Box
     {:display "flex"}
-    (map (fn [word]
-           ^{:key (:start word)} [:> Box {:display "flex"
-                                          :flex-direction "column"
-                                          :align-items "center"
-                                          :m 1}
-                                  [:div (:punctuated_word word)]
-                                  [:div (.toFixed (:score word) 2)]])
-         (:words @state))]])
+    (doall (map-indexed (fn [index word]
+                          ^{:key (:start word)} [:> Box {:display "flex"
+                                                         :flex-direction "column"
+                                                         :align-items "center"
+                                                         :m 1}
+                                                 [:div {:style (if (= index (:index @state))
+                                                                 {:color "black"
+                                                                  :background-color "white"}
+                                                                 {})}
+                                                  (:punctuated_word word)]
+                                                 [:div (.toFixed (:score word) 2)]])
+                        (:words @state)))]])
 
 (defn init []
   (js/console.log "Initializing renderer")
