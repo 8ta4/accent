@@ -210,7 +210,7 @@
 (def dark-theme
   (createTheme (clj->js {:palette {:mode "dark"}})))
 
-(defn box []
+(defn app []
   [:> ThemeProvider {:theme dark-theme}
    [:> CssBaseline]
    [:> Box
@@ -239,4 +239,4 @@
                                                          state)
                                          (push (:readable @state) message.data)))))))
   (set! js/window.onkeydown handle)
-  (client/render root [box]))
+  (client/render root [app]))
