@@ -84,11 +84,11 @@ Press `Escape` to clear any inputs that haven't been evaluated yet.
 
 If accessing `Escape` is inconvenient, consider remapping another key to work as `Escape`.
 
-> How do I play the reference speech? (Planned)
+> How do I play the reference speech?
 
 Press `f`. This will stop any currently playing speech and start playing the reference speech from the highlighted word.
 
-> How do I play back my speech? (Planned)
+> How do I play back my speech?
 
 Press `d`. This will stop any currently playing speech and start playing the user's speech from the highlighted word.
 
