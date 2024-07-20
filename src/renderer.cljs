@@ -111,13 +111,13 @@
   (specter/setval :score (dec (:confidence word)) word))
 
 (defn play
-  [buffer]
+  [buffer offset]
   (let [context (js/AudioContext.)
         source (.createBufferSource context)]
     (set! (.-buffer source) buffer)
     (.connect source (.-destination context))
     ((:stop @state))
-    (.start source)
+    (.start source 0 offset)
     (specter/setval [specter/ATOM :stop] #(.stop source) state)))
 
 (defn handle-user-transcription [response]
@@ -139,7 +139,7 @@
                                       #(let [context (js/AudioContext.)]
 ;; https://stackoverflow.com/a/10101213
                                          (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
-                                                   (play decoded-data)))
+                                                   (play decoded-data %)))
                                       state))))
 
 (defn create-readable []
@@ -178,7 +178,8 @@
 
 (defn play-reference []
   (js/console.log "Playing reference speech")
-  ((:play-reference @state)))
+;; TODO: Implement logic to play the reference speech from a specific offset
+  ((:play-reference @state) 0))
 
 (def channel
   0)
@@ -192,7 +193,7 @@
         buffer (.createBuffer context num-of-channels (count (:final-user-speech @state)) sample-rate)
         channel-data (.getChannelData buffer channel)]
     (.set channel-data (js/Float32Array. (:final-user-speech @state)))
-    (play buffer)))
+    (play buffer (:start (nth (:words @state) (:index @state))))))
 
 (defn escape []
   (js/console.log "Escape key pressed.")
