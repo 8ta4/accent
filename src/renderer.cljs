@@ -62,21 +62,29 @@
                                                                      :reference-words
                                                                      first
                                                                      :confidence))
-                                                    identity)))]
+                                                    identity))
+                               (specter/setval :reference
+                                               (if reference-word
+                                                 (:start (first (:reference-words context)))
+                                                 (:end context))))]
                          []))
        (specter/transform :user-words (if user-word
                                         rest
                                         identity))
        (specter/transform :reference-words (if reference-word
                                              rest
-                                             identity))))
+                                             identity))
+       (specter/transform :end (if reference-word
+                                 (constantly (:end (first (:reference-words context))))
+                                 identity))))
 
 (defn match-words [user-words reference-words]
   (->> (alignment/align (map :word user-words) (map :word reference-words))
        (reduce update-context
                {:results []
                 :user-words user-words
-                :reference-words reference-words})
+                :reference-words reference-words
+                :end 0})
        :results))
 
 (declare state)
@@ -123,24 +131,28 @@
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
-  (merge-into-atom (->> response
-                        extract-alternative
-                        (specter/transform [:words specter/ALL] initialize-score)
-                        (specter/setval :index 0))
-                   state)
-  (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
-                                                         :voice "fable"
-                                                         :input (:transcript (extract-alternative response))
-                                                         :response_format "opus"}))]
-            (js/console.log "Generated opus audio")
-            (js-await [buffer (.arrayBuffer opus)]
-                      (send-deepgram-request handle-reference-transcription (js/Buffer.from buffer))
-                      (specter/setval [specter/ATOM :play-reference]
-                                      #(let [context (js/AudioContext.)]
+  (when-not (->> response
+                 extract-alternative
+                 :words
+                 empty?)
+    (merge-into-atom (->> response
+                          extract-alternative
+                          (specter/transform [:words specter/ALL] initialize-score)
+                          (specter/setval :index 0))
+                     state)
+    (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
+                                                           :voice "fable"
+                                                           :input (:transcript (extract-alternative response))
+                                                           :response_format "opus"}))]
+              (js/console.log "Generated opus audio")
+              (js-await [buffer (.arrayBuffer opus)]
+                        (send-deepgram-request handle-reference-transcription (js/Buffer.from buffer))
+                        (specter/setval [specter/ATOM :play-reference]
+                                        #(let [context (js/AudioContext.)]
 ;; https://stackoverflow.com/a/10101213
-                                         (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
-                                                   (play decoded-data %)))
-                                      state))))
+                                           (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
+                                                     (play decoded-data %)))
+                                        state)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
@@ -176,10 +188,12 @@
                     :raw-user-speech []}
                    state))
 
+(defn get-current-word []
+  (nth (:words @state) (:index @state)))
+
 (defn play-reference []
   (js/console.log "Playing reference speech")
-;; TODO: Implement logic to play the reference speech from a specific offset
-  ((:play-reference @state) 0))
+  ((:play-reference @state) (:reference (get-current-word))))
 
 (def channel
   0)
@@ -193,7 +207,7 @@
         buffer (.createBuffer context num-of-channels (count (:final-user-speech @state)) sample-rate)
         channel-data (.getChannelData buffer channel)]
     (.set channel-data (js/Float32Array. (:final-user-speech @state)))
-    (play buffer (:start (nth (:words @state) (:index @state))))))
+    (play buffer (:start (get-current-word)))))
 
 (defn escape []
   (js/console.log "Escape key pressed.")
@@ -208,11 +222,20 @@
                     (calculate-index)
                     state)))
 
+(defn calculate-last-index []
+  (dec (count (:words @state))))
+
 (defn move-next []
-  (update-index #(min (inc (:index @state)) (dec (count (:words @state))))))
+  (update-index #(min (inc (:index @state)) (calculate-last-index))))
 
 (defn move-previous []
   (update-index #(max (dec (:index @state)) 0)))
+
+(defn move-last []
+  (update-index calculate-last-index))
+
+(defn move-first []
+  (update-index (constantly 0)))
 
 (defn handle [event]
   (case event.code
@@ -222,7 +245,10 @@
     "KeyD" (play-user)
     "KeyL" (move-next)
     "KeyH" (move-previous)
-    "default"))
+    "Digit0" (move-first)
+    "default")
+  (when (and (= event.code "Digit4") event.shiftKey)
+    (move-last)))
 
 (defonce root
   (client/create-root (js/document.getElementById "app")))
