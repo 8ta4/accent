@@ -224,6 +224,9 @@
 (defn move-previous []
   (update-index #(max (dec (:index @state)) 0)))
 
+(defn move-last []
+  (update-index #(dec (count (:words @state)))))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
@@ -232,7 +235,9 @@
     "KeyD" (play-user)
     "KeyL" (move-next)
     "KeyH" (move-previous)
-    "default"))
+    "default")
+  (when (and (= event.code "Digit4") event.shiftKey)
+    (move-last)))
 
 (defonce root
   (client/create-root (js/document.getElementById "app")))
