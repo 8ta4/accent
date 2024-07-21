@@ -220,18 +220,20 @@
    [:> CssBaseline]
    [:> Box
     {:display "flex"}
-    (doall (map-indexed (fn [index word]
-                          ^{:key (:start word)} [:> Box {:display "flex"
-                                                         :flex-direction "column"
-                                                         :align-items "center"
-                                                         :m 1}
-                                                 [:div {:style (if (= index (:index @state))
-                                                                 {:color "black"
-                                                                  :background-color "white"}
-                                                                 {})}
-                                                  (:punctuated_word word)]
-                                                 [:div (.toFixed (:score word) 2)]])
-                        (:words @state)))]])
+    (->> @state
+         :words
+         (map-indexed (fn [index word]
+                        ^{:key (:start word)} [:> Box {:display "flex"
+                                                       :flex-direction "column"
+                                                       :align-items "center"
+                                                       :m 1}
+                                               [:div {:style (if (= index (:index @state))
+                                                               {:color "black"
+                                                                :background-color "white"}
+                                                               {})}
+                                                (:punctuated_word word)]
+                                               [:div (.toFixed (:score word) 2)]]))
+         doall)]])
 
 (defn init []
   (js/console.log "Initializing renderer")
