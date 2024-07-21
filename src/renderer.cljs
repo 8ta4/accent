@@ -215,6 +215,19 @@
 (def dark-theme
   (createTheme (clj->js {:palette {:mode "dark"}})))
 
+(defn word-box
+  [index word]
+  ^{:key (:start word)} [:> Box {:display "flex"
+                                 :flex-direction "column"
+                                 :align-items "center"
+                                 :m 1}
+                         [:div {:style (if (= index (:index @state))
+                                         {:color "black"
+                                          :background-color "white"}
+                                         {})}
+                          (:punctuated_word word)]
+                         [:div (.toFixed (:score word) 2)]])
+
 (defn app []
   [:> ThemeProvider {:theme dark-theme}
    [:> CssBaseline]
@@ -222,17 +235,7 @@
     {:display "flex"}
     (->> @state
          :words
-         (map-indexed (fn [index word]
-                        ^{:key (:start word)} [:> Box {:display "flex"
-                                                       :flex-direction "column"
-                                                       :align-items "center"
-                                                       :m 1}
-                                               [:div {:style (if (= index (:index @state))
-                                                               {:color "black"
-                                                                :background-color "white"}
-                                                               {})}
-                                                (:punctuated_word word)]
-                                               [:div (.toFixed (:score word) 2)]]))
+         (map-indexed word-box)
          doall)]])
 
 (defn init []
