@@ -201,12 +201,20 @@
   ((:stop @state))
   (specter/setval [specter/ATOM :raw-user-speech] [] state))
 
+(defn advance-word []
+  (when (:words @state)
+    (specter/setval [specter/ATOM :index]
+                    (min (inc (:index @state))
+                         (dec (count (:words @state))))
+                    state)))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
     "Escape" (escape)
     "KeyF" (play-reference)
     "KeyD" (play-user)
+    "KeyL" (advance-word)
     "default"))
 
 (defonce root
