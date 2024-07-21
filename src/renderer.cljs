@@ -201,19 +201,18 @@
   ((:stop @state))
   (specter/setval [specter/ATOM :raw-user-speech] [] state))
 
-(defn move-next []
+(defn update-index
+  [calculate-index]
   (when (:words @state)
     (specter/setval [specter/ATOM :index]
-                    (min (inc (:index @state))
-                         (dec (count (:words @state))))
+                    (calculate-index)
                     state)))
 
+(defn move-next []
+  (update-index #(min (inc (:index @state)) (dec (count (:words @state))))))
+
 (defn move-previous []
-  (when (:words @state)
-    (specter/setval [specter/ATOM :index]
-                    (max (dec (:index @state))
-                         0)
-                    state)))
+  (update-index #(max (dec (:index @state)) 0)))
 
 (defn handle [event]
   (case event.code
