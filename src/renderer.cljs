@@ -201,11 +201,18 @@
   ((:stop @state))
   (specter/setval [specter/ATOM :raw-user-speech] [] state))
 
-(defn advance-word []
+(defn move-next []
   (when (:words @state)
     (specter/setval [specter/ATOM :index]
                     (min (inc (:index @state))
                          (dec (count (:words @state))))
+                    state)))
+
+(defn move-previous []
+  (when (:words @state)
+    (specter/setval [specter/ATOM :index]
+                    (max (dec (:index @state))
+                         0)
                     state)))
 
 (defn handle [event]
@@ -214,7 +221,8 @@
     "Escape" (escape)
     "KeyF" (play-reference)
     "KeyD" (play-user)
-    "KeyL" (advance-word)
+    "KeyL" (move-next)
+    "KeyH" (move-previous)
     "default"))
 
 (defonce root
