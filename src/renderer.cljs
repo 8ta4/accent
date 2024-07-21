@@ -62,21 +62,29 @@
                                                                      :reference-words
                                                                      first
                                                                      :confidence))
-                                                    identity)))]
+                                                    identity))
+                               (specter/setval :reference
+                                               (if reference-word
+                                                 (:start (first (:reference-words context)))
+                                                 (:end context))))]
                          []))
        (specter/transform :user-words (if user-word
                                         rest
                                         identity))
        (specter/transform :reference-words (if reference-word
                                              rest
-                                             identity))))
+                                             identity))
+       (specter/transform :end (if reference-word
+                                 (constantly (:end (first (:reference-words context))))
+                                 identity))))
 
 (defn match-words [user-words reference-words]
   (->> (alignment/align (map :word user-words) (map :word reference-words))
        (reduce update-context
                {:results []
                 :user-words user-words
-                :reference-words reference-words})
+                :reference-words reference-words
+                :end 0})
        :results))
 
 (declare state)
@@ -178,8 +186,7 @@
 
 (defn play-reference []
   (js/console.log "Playing reference speech")
-;; TODO: Implement logic to play the reference speech from a specific offset
-  ((:play-reference @state) 0))
+  ((:play-reference @state) (:reference (nth (:words @state) (:index @state)))))
 
 (def channel
   0)
