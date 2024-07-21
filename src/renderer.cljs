@@ -230,6 +230,9 @@
 (defn move-last []
   (update-index calculate-last-index))
 
+(defn move-first []
+  (update-index (constantly 0)))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
@@ -238,6 +241,7 @@
     "KeyD" (play-user)
     "KeyL" (move-next)
     "KeyH" (move-previous)
+    "Digit0" (move-first)
     "default")
   (when (and (= event.code "Digit4") event.shiftKey)
     (move-last)))
