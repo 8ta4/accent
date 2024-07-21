@@ -131,24 +131,28 @@
 (defn handle-user-transcription [response]
   (js/console.log "User transcription response:")
   (js/console.log response)
-  (merge-into-atom (->> response
-                        extract-alternative
-                        (specter/transform [:words specter/ALL] initialize-score)
-                        (specter/setval :index 0))
-                   state)
-  (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
-                                                         :voice "fable"
-                                                         :input (:transcript (extract-alternative response))
-                                                         :response_format "opus"}))]
-            (js/console.log "Generated opus audio")
-            (js-await [buffer (.arrayBuffer opus)]
-                      (send-deepgram-request handle-reference-transcription (js/Buffer.from buffer))
-                      (specter/setval [specter/ATOM :play-reference]
-                                      #(let [context (js/AudioContext.)]
+  (when-not (->> response
+                 extract-alternative
+                 :words
+                 empty?)
+    (merge-into-atom (->> response
+                          extract-alternative
+                          (specter/transform [:words specter/ALL] initialize-score)
+                          (specter/setval :index 0))
+                     state)
+    (js-await [opus (.audio.speech.create openai (clj->js {:model "tts-1"
+                                                           :voice "fable"
+                                                           :input (:transcript (extract-alternative response))
+                                                           :response_format "opus"}))]
+              (js/console.log "Generated opus audio")
+              (js-await [buffer (.arrayBuffer opus)]
+                        (send-deepgram-request handle-reference-transcription (js/Buffer.from buffer))
+                        (specter/setval [specter/ATOM :play-reference]
+                                        #(let [context (js/AudioContext.)]
 ;; https://stackoverflow.com/a/10101213
-                                         (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
-                                                   (play decoded-data %)))
-                                      state))))
+                                           (js-await [decoded-data (.decodeAudioData context (.slice buffer 0))]
+                                                     (play decoded-data %)))
+                                        state)))))
 
 (defn create-readable []
   (let [readable (stream/Readable. (clj->js {:read (fn [])}))
