@@ -218,14 +218,17 @@
                     (calculate-index)
                     state)))
 
+(defn calculate-last-index []
+  (dec (count (:words @state))))
+
 (defn move-next []
-  (update-index #(min (inc (:index @state)) (dec (count (:words @state))))))
+  (update-index #(min (inc (:index @state)) (calculate-last-index))))
 
 (defn move-previous []
   (update-index #(max (dec (:index @state)) 0)))
 
 (defn move-last []
-  (update-index #(dec (count (:words @state)))))
+  (update-index calculate-last-index))
 
 (defn handle [event]
   (case event.code
