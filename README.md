@@ -96,18 +96,18 @@ Press `d`. This will stop any currently playing speech and start playing the use
 
 Press `Esc` to stop any playback.
 
-> How do I move the highlight to the next word? (Planned)
+> How do I move the highlight to the next word?
 
 Press `l` to move the highlight to the next word. This is inspired by the Vim command for moving the cursor right.
 
-> How do I move the highlight to the previous word? (Planned)
+> How do I move the highlight to the previous word?
 
 Press `h` to move the highlight to the previous word. This is inspired by the Vim command for moving the cursor left.
 
-> How do I move the highlight to the last word of the line? (Planned)
+> How do I move the highlight to the last word of the line?
 
 Press `$` to move the highlight to the last word of the line. This is inspired by the Vim command for moving the cursor to the end of the line.
 
-> How do I move the highlight to the first word of the line? (Planned)
+> How do I move the highlight to the first word of the line?
 
 Press `0` to move the highlight to the first word of the line. This is inspired by the Vim command for moving the cursor to the beginning of the line.
