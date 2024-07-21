@@ -184,9 +184,12 @@
                     :raw-user-speech []}
                    state))
 
+(defn get-current-word []
+  (nth (:words @state) (:index @state)))
+
 (defn play-reference []
   (js/console.log "Playing reference speech")
-  ((:play-reference @state) (:reference (nth (:words @state) (:index @state)))))
+  ((:play-reference @state) (:reference (get-current-word))))
 
 (def channel
   0)
@@ -200,7 +203,7 @@
         buffer (.createBuffer context num-of-channels (count (:final-user-speech @state)) sample-rate)
         channel-data (.getChannelData buffer channel)]
     (.set channel-data (js/Float32Array. (:final-user-speech @state)))
-    (play buffer (:start (nth (:words @state) (:index @state))))))
+    (play buffer (:start (get-current-word)))))
 
 (defn escape []
   (js/console.log "Escape key pressed.")
