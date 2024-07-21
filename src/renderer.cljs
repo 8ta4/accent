@@ -201,12 +201,27 @@
   ((:stop @state))
   (specter/setval [specter/ATOM :raw-user-speech] [] state))
 
+(defn update-index
+  [calculate-index]
+  (when (:words @state)
+    (specter/setval [specter/ATOM :index]
+                    (calculate-index)
+                    state)))
+
+(defn move-next []
+  (update-index #(min (inc (:index @state)) (dec (count (:words @state))))))
+
+(defn move-previous []
+  (update-index #(max (dec (:index @state)) 0)))
+
 (defn handle [event]
   (case event.code
     "Space" (evaluate)
     "Escape" (escape)
     "KeyF" (play-reference)
     "KeyD" (play-user)
+    "KeyL" (move-next)
+    "KeyH" (move-previous)
     "default"))
 
 (defonce root
@@ -215,23 +230,28 @@
 (def dark-theme
   (createTheme (clj->js {:palette {:mode "dark"}})))
 
+(defn word-box
+  [index word]
+  ^{:key (:start word)} [:> Box {:display "flex"
+                                 :flex-direction "column"
+                                 :align-items "center"
+                                 :m 1}
+                         [:div {:style (if (= index (:index @state))
+                                         {:color "black"
+                                          :background-color "white"}
+                                         {})}
+                          (:punctuated_word word)]
+                         [:div (.toFixed (:score word) 2)]])
+
 (defn app []
   [:> ThemeProvider {:theme dark-theme}
    [:> CssBaseline]
    [:> Box
     {:display "flex"}
-    (doall (map-indexed (fn [index word]
-                          ^{:key (:start word)} [:> Box {:display "flex"
-                                                         :flex-direction "column"
-                                                         :align-items "center"
-                                                         :m 1}
-                                                 [:div {:style (if (= index (:index @state))
-                                                                 {:color "black"
-                                                                  :background-color "white"}
-                                                                 {})}
-                                                  (:punctuated_word word)]
-                                                 [:div (.toFixed (:score word) 2)]])
-                        (:words @state)))]])
+    (->> @state
+         :words
+         (map-indexed word-box)
+         doall)]])
 
 (defn init []
   (js/console.log "Initializing renderer")
