@@ -111,3 +111,7 @@ Press `$` to move the highlight to the last word of the line. This is inspired b
 > How do I move the highlight to the first word of the line?
 
 Press `0` to move the highlight to the first word of the line. This is inspired by the Vim command for moving the cursor to the beginning of the line.
+
+> What language does `accent` support?
+
+Right now, `accent` only works with English.
